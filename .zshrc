@@ -8,7 +8,7 @@ if [ -f /etc/zshrc ]; then
 fi
 
 HOST=`hostname`
-#DOMAIN=`domainname`
+DOMAIN=`hostname -d`
 
 if [ -f ~/.zshrc-$HOST-colours ]; then
 	source ~/.zshrc-$HOST-colours
@@ -18,8 +18,9 @@ fi
 
 if [ -f ~/.zshrc-$HOST ]; then
 	source ~/.zshrc-$HOST
-elif [ -f ~/.zshrc-$DOMAIN ]; then
-        source ~/.zshrc-$DOMAIN
+fi
+if [ -f ~/.zshrc-$DOMAIN ]; then
+    source ~/.zshrc-$DOMAIN
 fi
 
 if [ -f /usr/games/fortune ]; then
@@ -67,6 +68,9 @@ alias sane='echo -e "\\033c";tput is2;stty sane line 1'
 # if a glob doesn't match, just hand it to the command unchanged
 unsetopt nomatch
 
+# ignore history duplicates
+setopt histignoredups
+
 alias ind='indent -kr -bap -bl -bli0 -nce -cdw -cli2 -bls -ut -ts4 -l300'
 alias m2u='tr "\015" "\012" <'
 
@@ -80,5 +84,5 @@ alias scl='screen -ls'
 alias j='jobs'
 alias np='nautilus "`pwd`"'
 
+export DEBFULLNAME=Tom\ Parker
 export DEBEMAIL=debian@tevp.net
-
