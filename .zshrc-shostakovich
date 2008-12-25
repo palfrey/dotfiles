@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+export TOSDIR=~/data/tinyos/tos
+export MAKEOPTS="-j 4"
+export BSL=/dev/ttyUSB0
+export CLASSPATH=/usr/share/java/RXTXcomm.jar:.
+
+export PATH=$PATH:/opt/uClinux/bfin-linux-uclibc/bin:/opt/uClinux/bfin-uclinux/bin/
