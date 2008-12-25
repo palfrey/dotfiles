@@ -1,8 +1,15 @@
 [github]
-	user = palfrey
-	token = 2bb7788a856b41d8812807ed2fa85787
+       user = palfrey
+       token = 2bb7788a856b41d8812807ed2fa85787
+
+[user]
+	email=palfrey@tevp.net
+	name=Tom Parker
 
 [alias]
-	st = status
-	ca = commit -a
-	ci = commit
+	ca=commit -a
+	ci=commit
+	st=status
+
+[core]
+	excludesfile=/homes/tparker/.gitignore
