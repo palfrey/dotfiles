@@ -68,4 +68,4 @@ nnoremap \tp :set invpaste paste?<CR>
 nmap <F4> \tp
 imap <F4> <C-O>\tp
 set pastetoggle=<F4>
-set guifont=Droid\ Sans\ Mono\ 14
+
