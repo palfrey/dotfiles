@@ -12,4 +12,4 @@
 	st=status
 
 [core]
-	excludesfile=/homes/tparker/.gitignore
+	excludesfile=~/.gitignore
