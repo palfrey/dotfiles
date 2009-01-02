@@ -1,0 +1,169 @@
+#!/usr/bin/python
+from os import listdir,rename,mkdir
+import re
+from time import strptime
+from sys import argv,exit,modules
+from os.path import join,expanduser,isdir
+from htmlentitydefs import entitydefs
+
+cdir = join(expanduser("~"),".renamer-cache")
+
+rem = ["(?:dsr|xvid)-.*","[\[\(\{\)][^\]\)\}]*[\]\)\}]","xvid","fov","dvdrip","(?<!o)ws","sfm","d((iv)|(vi))x.*","dsrip","ac3","vfua","\]","\[","pdtv","sharetv","ez","tvrip","dsr","dimension","lol","xor","repack","notv","hdtv","mp3","jm","zx","orenji","axxo","crimson","omicron","medieval","a4o","=[^=]*="," eng ","\.pl\.","yestv","internal","preair","vostfr"]
+for r in range(len(rem)):
+	rem[r] = re.compile(rem[r],re.IGNORECASE)
+hexm = re.compile("(_[\da-fA-F]{2}\d*)")
+
+endings = ["mkv","avi","ogm","srt","mpg","mpeg","mp4","idx","sub"]
+
+from optparse import OptionParser
+parser = OptionParser()
+parser.add_option("-s","--series",default=None,action="store",type="string",dest="series")
+parser.add_option("-r","--rename",default=False,action="store_true",dest="rename")
+parser.add_option("-v","--verbose",default=False,action="store_true",dest="verbose")
+parser.add_option("-p","--prepend",default="",action="store",type="string",dest="prepend")
+(opts,args) = parser.parse_args()
+
+try:
+	from urlgrab.GetURL import GetURL
+	from urlgrab.URLTimeout import URLTimeoutError
+	cache = GetURL(debug=False,cche=cdir)
+	cache.user_agent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3"
+except:
+	cache = None
+
+def epguides(name):
+	data = cache.get("http://epguides.com/%s/"%name,max_age=60*60*24*2).read()
+	patt = re.compile("\d+.\s+(\d+)-([\s\d]+)\s*(?:[\dA-Z\-()]+)?\s+(\d+ [A-Z][a-z]+ \d+)?\s+<a target=\"(?:visit|_blank)\" href=\"[^\"]+\">([^<]+)</a>")
+	eps = patt.findall(data)
+	if len(eps) ==0:
+		raise Exception
+	neweps = {}
+	for e in eps:
+		n = list(e)
+		try:
+			n[2] = strptime(n[2],"%d %b %y")
+		except ValueError:
+			if n[2] != "":
+				print n
+				raise
+			n[2] = None
+		n[1] = n[1][:2]
+		#print n[0:2]
+		for e in entitydefs:
+			n[3] = n[3].replace("&%s;"%e,entitydefs[e])
+		neweps[tuple([int(x) for x in n[0:2]])] = n[3]
+	#print neweps
+	return neweps
+
+if len(args)==0:
+	files = listdir('.')
+else:
+	files = args
+
+for x in files:
+	if x[-3:].lower() not in endings and (len(args)==0 or not isdir(x)):
+		continue
+	end = x[-3:]
+	sp = [".","_"," ","-"]
+	ch = opts.prepend+x
+	ch = ch.replace("Season ","S")
+	ch = ch.replace("Episode ","E")
+	h = hexm.findall(ch)
+	if h!=[]:
+		for c in h:
+			if len(c)>2:
+				continue
+			r = int(c[1:],16)
+			if r>0x13 and r<80:
+				r = chr(r)
+				ch = ch.replace(c,r)
+	for r in rem:
+		s = r.search(ch)
+		while s!=None:
+			ch = ch[:s.start()]+ch[s.end():]
+			s = r.search(ch)
+	z = [ch]
+	for s in sp:
+		out = []
+		for n in z:
+			out+=n.split(s)
+		z = out
+	z = z[:-1]
+	if opts.series == None:
+		eps = None
+	else:
+		if cache == None:
+			print "Can't find series data without URLGrab"
+			print "You need to install urlgrab for series capability. Get it using 'darcs get http://tevp.net/projects/urlgrab'"
+			exit(1)
+		eps = epguides(opts.series)
+	#print z
+	#continue
+	ok = []
+	cross = False
+	for n in z:
+		if not cross:
+			for r in rem:
+				s = r.search(n)
+				while s!=None:
+					n = n[:s.start()]+n[s.end():]
+					s = r.search(n)
+			else:
+				res = re.match("(?:S|s)(\d+)(?:e|E|X|x)(\d+)",n)
+				if res == None:
+					res = re.match("(\d+)(\d{2})",n)
+				if res == None:
+					res = re.match("(\d+)(?:X|x)(\d+)",n)
+				if res == None:
+					res = re.match("E(\d+)(\d{2})",n)
+				if x.find("Naruto")==-1 and x.find("Bleach")==-1 and res!=None and res.groups()[0]!="20" and int(res.groups()[1])<50 and int(res.groups()[1])!=0:
+					intg = tuple([int(b) for b in res.groups()])
+					if eps!=None:
+						idx = z.index(n)
+						#print "intg",intg
+						#print "epname",eps[intg]
+						#print "append",eps[intg],idx,z
+						z = z[:idx+1]
+						#print "append",eps[intg],idx,z
+						ok.append(n)
+						ok.extend(eps[intg].split())
+						#print "append",eps[intg],idx,z
+						#print
+						break
+					n = "%dx%02d"%intg
+					cross = True
+		if n!="":
+			ok.append(n)
+	
+	while ok[-1] == "-":
+		ok = ok[:-1]
+	
+	for pos in range(1,8):
+		if len(ok)>pos+1 and len(ok[pos])>1 and ok[pos][1] == "x" and len(ok[pos])==4: # i.e. YxZZ
+			ok.insert(pos+1,"-")
+			break
+			
+	new = " ".join([z.title() for z in ok])+"."+end
+	res = re.search(" (\d+X\d{2})",new)
+	if res!=None:
+		new = new[:res.end(1)-3]+'x'+new[res.end(1)-2:]
+	
+	nr = {"Sg 1":"SG-1","Cd":"CD","Iii":"III","Ii":"II","'S":"'s","Cots":"Crest of the Stars","Csi":"CSI"}
+	kr = nr.keys()
+	kr.sort(lambda x,y:cmp(len(y),len(x)))
+	for k in kr:
+		new = new.replace(k,nr[k])
+
+	invalid = ["*","?"]
+	for z in range(len(new)):
+		if new[z] in invalid:
+			new = new[:z] +"_"+new[z+1:]
+
+	if x!=new:
+		print "'%s' => '%s'"%(x,new)
+		if opts.rename:
+			rename(x,"blah")
+			rename("blah",new)
+	elif opts.verbose:
+		print x
+
