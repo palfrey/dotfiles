@@ -3,7 +3,7 @@ from os import listdir,rename,mkdir
 import re
 from time import strptime
 from sys import argv,exit,modules
-from os.path import join,expanduser,isdir
+from os.path import join,expanduser,isdir,exists
 from htmlentitydefs import entitydefs
 
 cdir = join(expanduser("~"),".renamer-cache")
@@ -21,6 +21,7 @@ parser.add_option("-s","--series",default=None,action="store",type="string",dest
 parser.add_option("-r","--rename",default=False,action="store_true",dest="rename")
 parser.add_option("-v","--verbose",default=False,action="store_true",dest="verbose")
 parser.add_option("-p","--prepend",default="",action="store",type="string",dest="prepend")
+parser.add_option("-n","--no-overwrite",default=True,action="store_false",dest="overwrite")
 (opts,args) = parser.parse_args()
 
 try:
@@ -161,9 +162,15 @@ for x in files:
 
 	if x!=new:
 		print "'%s' => '%s'"%(x,new)
+		if new=="":
+			print "Won't rename! Blank target!"
+			continue
 		if opts.rename:
-			rename(x,"blah")
-			rename("blah",new)
+			if not opts.overwrite and exists(new):
+				print "Skipping, due to overwrite"
+			else:
+				rename(x,"blah")
+				rename("blah",new)
 	elif opts.verbose:
 		print x
 
