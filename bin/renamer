@@ -98,7 +98,7 @@ for x in files:
 	else:
 		if cache == None:
 			print "Can't find series data without URLGrab"
-			print "You need to install urlgrab for series capability. Get it using 'darcs get http://tevp.net/projects/urlgrab'"
+			print "You need to install urlgrab for series capability. Get it using 'git clone git://github.com/palfrey/urlgrab.git urlgrab'"
 			exit(1)
 		eps = epguides(opts.series)
 	#print z
