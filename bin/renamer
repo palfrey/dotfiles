@@ -64,7 +64,10 @@ else:
 for x in files:
 	if x[-3:].lower() not in endings and (len(args)==0 or not isdir(x)):
 		continue
-	end = x[-3:]
+	if x[-4] == ".":
+		end = x[-3:]
+	else:
+		end = ""
 	sp = [".","_"," ","-"]
 	ch = opts.prepend+x
 	ch = ch.replace("Season ","S")
@@ -144,7 +147,9 @@ for x in files:
 			ok.insert(pos+1,"-")
 			break
 			
-	new = " ".join([z.title() for z in ok])+"."+end
+	new = " ".join([z.title() for z in ok])
+	if end!="":
+		new +="."+end
 	res = re.search(" (\d+X\d{2})",new)
 	if res!=None:
 		new = new[:res.end(1)-3]+'x'+new[res.end(1)-2:]
