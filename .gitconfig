@@ -8,6 +8,7 @@
 
 [alias]
 	ca=commit -a
+	co=checkout
 	ci=commit
 	st=status
 
