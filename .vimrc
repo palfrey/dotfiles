@@ -24,6 +24,7 @@ set ignorecase
 set vb
 " Source in your custom filetypes as given below -
 " so $HOME/vim/myfiletypes.vim
+filetype plugin on
 " Make command line two lines high
 set ch=2
 " Make shift-insert work like in Xterm
