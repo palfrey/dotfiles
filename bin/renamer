@@ -8,7 +8,7 @@ from htmlentitydefs import entitydefs
 
 cdir = join(expanduser("~"),".renamer-cache")
 
-rem = ["(?:dsr|xvid)-.*","[\[\(\{\)][^\]\)\}]*[\]\)\}]","xvid","fov","dvdrip","(?<!o)ws","sfm","d((iv)|(vi))x.*","dsrip","ac3","vfua","\]","\[","pdtv","sharetv","ez","tvrip","dsr","dimension","lol","xor","repack","notv","hdtv","mp3","jm","zx","orenji","axxo","crimson","omicron","medieval","a4o","=[^=]*="," eng ","\.pl\.","yestv","internal","preair","vostfr","webrip"]
+rem = ["(?:dsr|xvid)-.*","[\[\(\{\)][^\]\)\}]*[\]\)\}]","xvid","fov","dvdrip","(?<!o)ws","sfm","d((iv)|(vi))x.*","dsrip","ac3","vfua","\]","\[","pdtv","sharetv","ez","tvrip","dsr","dimension","lol","xor","repack","notv","hdtv","mp3","jm","zx","orenji","axxo","crimson","omicron","medieval","a4o","=[^=]*="," eng ","\.pl\.","yestv","internal","preair","vostfr","webrip","lumpidumb","sharereactor"]
 for r in range(len(rem)):
 	rem[r] = re.compile(rem[r],re.IGNORECASE)
 hexm = re.compile("(_[\da-fA-F]{2}\d*)")
