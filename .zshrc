@@ -86,3 +86,6 @@ alias np='nautilus "`pwd`"'
 
 export DEBFULLNAME=Tom\ Parker
 export DEBEMAIL=debian@tevp.net
+
+# drop caps lock entirely
+xmodmap -e "remove lock = Caps_Lock"
