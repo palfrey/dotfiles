@@ -58,6 +58,8 @@ set mouse=a
 cab du 1,$s///
 
 set tabstop=4
+set noet
+set formatoptions=tcq
 filetype indent on
 
 autocmd FileType python set ts=4
