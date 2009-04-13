@@ -5,6 +5,7 @@ color desert
 " Highly recommended to set tab keys to 4 spaces
 set shiftwidth=4
 set noet
+set tabstop=4
 
 " Kill the fricking folds
 set nofoldenable
@@ -57,8 +58,6 @@ set mouse=a
 " Dos2unix (remove the ^M's)
 cab du 1,$s///
 
-set tabstop=4
-set noet
 set formatoptions=tcq
 filetype indent on
 
