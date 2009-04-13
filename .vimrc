@@ -62,8 +62,7 @@ set noet
 set formatoptions=tcq
 filetype indent on
 
-autocmd FileType python set ts=4
-
+set modeline
 set nobackup
 set nowritebackup
 
