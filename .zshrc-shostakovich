@@ -6,3 +6,4 @@ export BSL=/dev/ttyUSB0
 export CLASSPATH=/usr/share/java/RXTXcomm.jar:.
 
 export PATH=$PATH:/opt/uClinux/bfin-linux-uclibc/bin:/opt/uClinux/bfin-uclinux/bin/:/opt/uClinux/bfin-elf/bin/
+export PRINTER=mocha
