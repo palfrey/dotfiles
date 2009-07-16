@@ -38,9 +38,9 @@ setopt PROMPT_SUBST
 export PROMPT="$RED%n$NO_COLOUR@$GREEN%m:${RED}[$LIGHT_CYAN%~${RED}]$NO_COLOUR "
 export RPS1="%(?.$LIGHT_CYAN.$GREEN<=====)$NO_COLOUR"
 
-export HISTSIZE=100
+export HISTSIZE=5000
 export HISTFILE=~/.history
-export SAVEHIST=100
+export SAVEHIST=5000
 
 export NO_LIST_BEEP=1
 export COMPLETE_IN_WORD=1
