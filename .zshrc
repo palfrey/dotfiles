@@ -71,7 +71,7 @@ unsetopt nomatch
 # ignore history duplicates
 setopt histignoredups
 
-alias ind='indent -kr -bap -bl -bli0 -nce -cdw -cli2 -bls -ut -ts4 -l300'
+alias ind='indent -kr -bap -bl -bli0 -nce -cdw -cli4 -bls -ut -ts4 -l300'
 alias m2u='tr "\015" "\012" <'
 
 # set Emacs binding for line edit, as that gives Home/End as normal.
