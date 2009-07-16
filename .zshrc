@@ -89,3 +89,6 @@ export DEBEMAIL=debian@tevp.net
 
 # drop caps lock entirely
 xmodmap -e "remove lock = Caps_Lock"
+
+# searching for specified string
+bindkey "^R"    history-incremental-search-backward
