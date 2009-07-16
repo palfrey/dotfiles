@@ -8,6 +8,7 @@
 	co=checkout
 	ci=commit
 	st=status
+	up = pull --rebase
 
 [core]
 	excludesfile=~/.gitignore
