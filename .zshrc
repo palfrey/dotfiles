@@ -83,6 +83,7 @@ alias sc='screen -R'
 alias scl='screen -ls'
 alias j='jobs'
 alias np='nautilus "`pwd`"'
+alias today='ps -ef|grep "[[:digit:]] [[:digit:]][[:digit:]]:[[:digit:]][[:digit:]] "'
 
 export DEBFULLNAME=Tom\ Parker
 export DEBEMAIL=debian@tevp.net
