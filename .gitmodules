@@ -1,3 +1,6 @@
 [submodule "bin/urlgrab"]
 	path = bin/urlgrab
 	url = git://git@github.com:palfrey/urlgrab.git
+[submodule "bin/iotop"]
+	path = bin/iotop
+	url = git://repo.or.cz/iotop.git
