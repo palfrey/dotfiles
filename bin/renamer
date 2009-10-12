@@ -13,7 +13,7 @@ for r in range(len(rem)):
 	rem[r] = re.compile(rem[r],re.IGNORECASE)
 hexm = re.compile("(_[\da-fA-F]{2}\d*)")
 
-endings = ["mkv","avi","ogm","srt","mpg","mpeg","mp4","idx","sub"]
+endings = ["mkv","avi","ogm","srt","mpg","mpeg","mp4","idx","sub","mov"]
 
 from optparse import OptionParser
 parser = OptionParser()
