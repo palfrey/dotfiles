@@ -22,6 +22,7 @@ parser.add_option("-r","--rename",default=False,action="store_true",dest="rename
 parser.add_option("-v","--verbose",default=False,action="store_true",dest="verbose")
 parser.add_option("-p","--prepend",default="",action="store",type="string",dest="prepend")
 parser.add_option("-n","--no-overwrite",default=True,action="store_false",dest="overwrite")
+parser.add_option("-k","--keep-hyphens",default=True,action="store_false",dest="drop_hyphens")
 (opts,args) = parser.parse_args()
 
 try:
@@ -68,7 +69,9 @@ for x in files:
 		end = x[-3:]
 	else:
 		end = ""
-	sp = [".","_"," ","-"]
+	sp = [".","_"," "]
+	if opts.drop_hyphens:
+		sp.append("-")
 	ch = opts.prepend+x
 	ch = ch.replace("Season ","S")
 	ch = ch.replace("Episode ","E")
@@ -144,7 +147,8 @@ for x in files:
 	
 	for pos in range(1,8):
 		if len(ok)>pos+1 and len(ok[pos])>1 and ok[pos][1] == "x" and len(ok[pos])==4: # i.e. YxZZ
-			ok.insert(pos+1,"-")
+			if ok[pos+1] != "-":
+				ok.insert(pos+1,"-")
 			break
 			
 	new = " ".join([z.title() for z in ok])
