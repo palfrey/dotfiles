@@ -15,3 +15,6 @@ fi
 export VIMGUI=gtk
 alias vi='vim'
 alias ack='ack-grep'
+
+export PATH=$PATH:/opt/uClinux/bfin-linux-uclibc/bin:/opt/uClinux/bfin-uclinux/bin
+export TOSDIR=/home/palfrey/src/vsn/tinyos/tos
