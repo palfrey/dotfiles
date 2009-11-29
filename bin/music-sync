@@ -1,0 +1,227 @@
+#!/usr/bin/python
+
+from optparse import OptionParser
+import gio, gtk, gobject, glib
+from sys import exit
+
+parser = OptionParser(usage="Usage: %prog [options] <destination path>")
+parser.add_option("-c","--copy",dest="copy",default=False,action="store_true",help="Copy missing files")
+parser.add_option("-s","--source",dest="source",default=".",type="string",help="Source path (Default: current directory)")
+(opts,args) = parser.parse_args()
+
+if len(args)!=1:
+	parser.error("Need a destination path")
+
+copy = opts.copy
+
+roots = [gio.File(opts.source),gio.File(args[0])]
+
+def blah2(*args, **kwargs):
+	print "blah2 called",args,kwargs
+
+def password(mo, prompt,username,password, flags):
+	print "blah2 called",args,
+	mo.props.username = "gah"
+	mo.props.password = "gah"
+	username = "agh"
+	password = "agh"
+
+def mount_callback(volume, result):
+	try:
+		res = r.mount_enclosing_volume_finish(result)
+		print "Callback while mounting %s: ",volume.get_uri(),res
+	except (gio.Error,glib.GError),e:
+		print "Exception while mounting %s: %s"%(volume.get_uri(),e.message)
+		global mount_issues
+		mount_issues = True
+	global tomount
+	tomount -=1
+	if tomount == 0:
+		global ml
+		ml.quit()
+
+class CLIMount(gio.MountOperation):
+	def get_username(*args, **kwargs):
+		print "get_username",args,kwargs
+	def get_password(*args, **kwargs):
+		print "get_password",args,kwargs
+	def get_property(*args, **kwargs):
+		print "get_property",args,kwargs
+	def get_(*args, **kwargs):
+		print "get_",args,kwargs
+	def get_anonymous(*args, **kwargs):
+		print "get_a",args,kwargs
+	def get_choice(*args, **kwargs):
+		print "get_c",args,kwargs
+	def get_domain(*args, **kwargs):
+		print "get_",args,kwargs
+
+#mo = CLIMount()
+wi = gtk.Window()
+mo = gtk.MountOperation(wi)
+for sig in gobject.signal_list_names(mo):
+	mo.connect(sig,blah2)
+	print sig,gobject.signal_query(sig,mo)
+
+mount_issues = False
+tomount = 0
+
+for r in roots:
+	try:
+		if not r.is_native():
+			print "Trying to mount", r.get_uri(), "...",
+			r.find_enclosing_mount()
+			print "which is already mounted"
+	except Exception, e:
+		print
+		if e.code == 16: # not mounted
+			r.mount_enclosing_volume(mo,mount_callback)
+			tomount +=1
+		else:
+			raise
+
+if tomount >0:
+	ml = gobject.MainLoop()
+	ml.run()
+	if mount_issues:
+		exit(1)
+
+missing = []
+
+def ciexists(path): # case insensitive exists
+	pth = cipath(path)
+	if pth!=None:
+		return pth.query_exists()
+	else:
+		print "problem constructing",path
+		raise Exception
+		return False
+
+def cipath(path): # case insensitive path
+	if path == None or path.query_exists():
+		return path
+	#print "path",path
+	bits = []
+	parent = path
+	while parent!=None:
+		top_level = parent
+		bits.append(parent.get_basename())
+		parent = parent.get_parent()
+	bits.reverse()
+	if bits[0] == "/":
+		bits = bits[1:]
+	#print "bits",bits
+
+	sofar = top_level
+	for item in bits:
+		if not sofar.get_child(item).query_exists():
+			#print "item",item
+			#print "sofar",sofar
+			for x in sofar.enumerate_children(",".join([gio.FILE_ATTRIBUTE_STANDARD_NAME,gio.FILE_ATTRIBUTE_STANDARD_TYPE])):
+				if item.lower() == x.get_name().lower():
+					print "found",x,item
+					sofar += sep+x
+					break
+			else:
+				return path
+		else:
+			sofar = sofar.get_child(item)
+	else:
+		return sofar
+
+def _walker(root):
+	dirs = []
+	files = []
+	try:
+		for c in root.enumerate_children(",".join([gio.FILE_ATTRIBUTE_STANDARD_NAME,gio.FILE_ATTRIBUTE_STANDARD_TYPE])):
+			name = c.get_name()
+			kind = c.get_file_type()
+			if kind == gio.FILE_TYPE_DIRECTORY:
+				dirs.append(name)
+			elif kind == gio.FILE_TYPE_REGULAR:
+				files.append(name)
+			else:
+				raise Exception,kind
+	except gio.Error,e:
+		if e.code == 14: # permission denied
+			raise Exception, "Couldn't access %s. Do you have sufficient permissions?"%root.get_uri()
+		else:
+			raise
+	yield (root,tuple(dirs),files)
+	for d in dirs:
+		for ret in _walker(root.get_child(d)):
+			yield ret
+
+def walk(root):
+	for ret in _walker(root):
+		yield ret
+
+for root,dirs,files in walk(roots[0]):
+	if len(dirs)>0:
+		dirs = sorted(list(dirs))
+		#print "dirs",dirs
+	for a in range(len(dirs)):
+		while True:
+			if a>=len(dirs):
+				break
+			x = dirs[a]
+			if root.get_parent() != None:
+				f = root.get_child(x).get_path()[len(roots[0].get_path())+1:]
+			else:
+				f = root.get_child(x).get_path()
+			of = cipath(roots[1].get_child(f))
+			f = root.get_child(x)
+			#print "f",f.get_uri(),of.get_uri()
+			if not ciexists(of):
+				print "missing dir",of.get_uri()
+				if copy:
+					parent = of.get_parent()
+					if not ciexists(parent):
+						print "making %s"%parent.get_uri()
+						ret = parent.make_directory()
+						print ret
+					print "%s => %s"%(f.get_uri(),of.get_uri())
+					try:
+						of.make_directory()
+					except gio.Error,e:
+						if e.code == 14: # permission denied
+							raise Exception, "Couldn't create directory %s. Do you have sufficient permissions?"%of.get_uri()
+						else:
+							raise
+				dirs.remove(x)
+				continue
+			else:
+				if not of.query_exists():
+					newy = cipath(of)[len(roots[1])+len(sep)*2:]
+					if newf.rfind("/")!=-1:
+						newf = newf[newf.rfind("/")+len(sep):]
+					#print "replacing",f,x,newf
+					dirs.remove(x)
+					dirs.append(newf)
+					#raise Exception,(roots[1],of,cipath(of)[len(roots[1])+len(sep)*2:])
+				#print "dir (exists)",of
+				break
+	#if len(dirs)>0:
+	#	print "dirs",dirs
+	for x in files:
+		if x.find("mp3")==-1 and x.find("ogg")==-1:
+			continue
+		f = root.get_child(x).get_path()[len(roots[0].get_path())+1:]
+		of = cipath(roots[1].get_child(f))
+		f = root.get_child(x)
+		#print "f",f,of
+		sf = f.query_info("standard::size").get_size()
+		if ciexists(of):
+			sof = of.query_info("standard::size").get_size()
+		else:
+			sof = 0
+		if not ciexists(of): # or sf!=sof:
+			print "missing file",of.get_uri()
+			if copy:
+				parent = of.get_parent()
+				if not ciexists(parent):
+					print "making %s"%parent.get_uri()
+					parent.make_directory()
+				print "%s => %s"%(f.get_uri(),of.get_uri())
+				f.copy(of)
+				
