@@ -135,6 +135,8 @@ def _walker(root):
 	try:
 		for c in root.enumerate_children(",".join([gio.FILE_ATTRIBUTE_STANDARD_NAME,gio.FILE_ATTRIBUTE_STANDARD_TYPE])):
 			name = c.get_name()
+			if name[0] == ".": # skip hidden folders:
+				continue
 			kind = c.get_file_type()
 			if kind == gio.FILE_TYPE_DIRECTORY:
 				dirs.append(name)
