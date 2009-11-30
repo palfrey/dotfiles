@@ -162,49 +162,6 @@ for root,dirs,files in walk(roots[0]):
 	if len(dirs)>0:
 		dirs = sorted(list(dirs))
 		#print "dirs",dirs
-	for a in range(len(dirs)):
-		while True:
-			if a>=len(dirs):
-				break
-			x = dirs[a]
-			if root.get_parent() != None:
-				f = root.get_child(x).get_path()[len(roots[0].get_path())+1:]
-			else:
-				f = root.get_child(x).get_path()
-			of = cipath(roots[1].get_child(f))
-			f = root.get_child(x)
-			#print "f",f.get_uri(),of.get_uri()
-			if not ciexists(of):
-				print "missing dir",of.get_uri()
-				if copy:
-					parent = of.get_parent()
-					if not ciexists(parent):
-						print "making %s"%parent.get_uri()
-						ret = parent.make_directory()
-						print ret
-					print "%s => %s"%(f.get_uri(),of.get_uri())
-					try:
-						of.make_directory()
-					except gio.Error,e:
-						if e.code == 14: # permission denied
-							raise Exception, "Couldn't create directory %s. Do you have sufficient permissions?"%of.get_uri()
-						else:
-							raise
-				dirs.remove(x)
-				continue
-			else:
-				if not of.query_exists():
-					newy = cipath(of)[len(roots[1])+len(sep)*2:]
-					if newf.rfind("/")!=-1:
-						newf = newf[newf.rfind("/")+len(sep):]
-					#print "replacing",f,x,newf
-					dirs.remove(x)
-					dirs.append(newf)
-					#raise Exception,(roots[1],of,cipath(of)[len(roots[1])+len(sep)*2:])
-				#print "dir (exists)",of
-				break
-	#if len(dirs)>0:
-	#	print "dirs",dirs
 	for x in files:
 		if x.find("mp3")==-1 and x.find("ogg")==-1:
 			continue
@@ -223,7 +180,7 @@ for root,dirs,files in walk(roots[0]):
 				parent = of.get_parent()
 				if not ciexists(parent):
 					print "making %s"%parent.get_uri()
-					parent.make_directory()
+					parent.make_directory_with_parents(gio.Cancellable())
 				print "%s => %s"%(f.get_uri(),of.get_uri())
 				f.copy(of)
 				
