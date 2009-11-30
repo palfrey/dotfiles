@@ -1,5 +1,11 @@
 #!/usr/bin/python
 
+# TODO:
+# file bugs about not supporting sftp://username:password@host.
+# Also, sftp://u:p@h comes out as sftp://u@h in mounts, but not in the file when mounted...
+#
+# gio.File.make_directory_with_parents() *needs* an arg!
+
 from optparse import OptionParser
 import gio, gtk, gobject, glib
 from sys import exit
@@ -14,54 +20,51 @@ if len(args)!=1:
 
 copy = opts.copy
 
-roots = [gio.File(opts.source),gio.File(args[0])]
+# FIXME: Workaround to u:p@h issue mentioned above
+def FileWithPassword(commandline):
+	at = commandline.find("@")
+	colon = commandline.find(":")
+	if colon != -1:
+		colon2 = commandline[colon+1:].find(":")
+		if colon2 != -1:
+			colon2 += colon+1
+	else:
+		colon2 = -1
+	if at !=-1 and colon2 != -1 and colon2<at: # last needed to ignore ports
+		password = commandline[colon2+1:at]
+		commandline = commandline[:colon2]+commandline[at:]
+	else:
+		password = None
+	ret = gio.File(commandline)
+	ret._password = password
+	return ret
 
-def blah2(*args, **kwargs):
-	print "blah2 called",args,kwargs
+roots = [FileWithPassword(opts.source),FileWithPassword(args[0])]
 
-def password(mo, prompt,username,password, flags):
-	print "blah2 called",args,
-	mo.props.username = "gah"
-	mo.props.password = "gah"
-	username = "agh"
-	password = "agh"
+def password(mo, prompt,username,password, flags, vol):
+	if password == "" and vol._password!=None:
+		password = vol._password
+	mo.set_username(username)
+	mo.set_password(password)
+	mo.reply(gio.MOUNT_OPERATION_HANDLED)
 
 def mount_callback(volume, result):
+	global mount_issues
 	try:
 		res = r.mount_enclosing_volume_finish(result)
-		print "Callback while mounting %s: ",volume.get_uri(),res
+		if res:
+			print "Mounted %s"%volume.get_uri()
+		else:
+			print "Error while mounting %s!"%volume.get_uri()
+			mount_issues = True
 	except (gio.Error,glib.GError),e:
 		print "Exception while mounting %s: %s"%(volume.get_uri(),e.message)
-		global mount_issues
 		mount_issues = True
 	global tomount
 	tomount -=1
 	if tomount == 0:
 		global ml
 		ml.quit()
-
-class CLIMount(gio.MountOperation):
-	def get_username(*args, **kwargs):
-		print "get_username",args,kwargs
-	def get_password(*args, **kwargs):
-		print "get_password",args,kwargs
-	def get_property(*args, **kwargs):
-		print "get_property",args,kwargs
-	def get_(*args, **kwargs):
-		print "get_",args,kwargs
-	def get_anonymous(*args, **kwargs):
-		print "get_a",args,kwargs
-	def get_choice(*args, **kwargs):
-		print "get_c",args,kwargs
-	def get_domain(*args, **kwargs):
-		print "get_",args,kwargs
-
-#mo = CLIMount()
-wi = gtk.Window()
-mo = gtk.MountOperation(wi)
-for sig in gobject.signal_list_names(mo):
-	mo.connect(sig,blah2)
-	print sig,gobject.signal_query(sig,mo)
 
 mount_issues = False
 tomount = 0
@@ -75,6 +78,8 @@ for r in roots:
 	except Exception, e:
 		print
 		if e.code == 16: # not mounted
+			mo = gio.MountOperation()
+			mo.connect("ask-password",password,r)
 			r.mount_enclosing_volume(mo,mount_callback)
 			tomount +=1
 		else:
