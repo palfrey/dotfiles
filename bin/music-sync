@@ -174,9 +174,9 @@ for root,dirs,files in walk(roots[0]):
 		of = cipath(roots[1].get_child(f))
 		f = root.get_child(x)
 		#print "f",f,of
-		sf = f.query_info("standard::size").get_size()
+		sf = f.query_info(gio.FILE_ATTRIBUTE_STANDARD_SIZE).get_size()
 		if ciexists(of):
-			sof = of.query_info("standard::size").get_size()
+			sof = of.query_info(gio.FILE_ATTRIBUTE_STANDARD_SIZE).get_size()
 		else:
 			sof = 0
 		if not ciexists(of): # or sf!=sof:
