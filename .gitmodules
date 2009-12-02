@@ -1,0 +1,3 @@
+[submodule "bin/urlgrab"]
+	path = bin/urlgrab
+	url = git://git@github.com:palfrey/urlgrab.git
