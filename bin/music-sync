@@ -82,14 +82,17 @@ for r in roots:
 			mo.connect("ask-password",password,r)
 			r.mount_enclosing_volume(mo,mount_callback)
 			tomount +=1
+		elif e.code == 1: # "could not find enclosing mount"
+			print "Can't seem to use %s as a mount point (detailed error: %s)"%(r.get_uri(),e.message)
+			mount_issues = True
 		else:
 			raise
 
 if tomount >0:
 	ml = gobject.MainLoop()
 	ml.run()
-	if mount_issues:
-		exit(1)
+if mount_issues:
+	exit(1)
 
 missing = []
 
