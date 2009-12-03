@@ -178,8 +178,11 @@ for root,_,files in walk(roots[0]):
 			sof = of.query_info(gio.FILE_ATTRIBUTE_STANDARD_SIZE).get_size()
 		else:
 			sof = 0
-		if not ciexists(of): # or sf!=sof:
-			print "missing file",of.get_uri()
+		if not ciexists(of) or sf!=sof:
+			if ciexists(of):
+				print "filesizes (%d, %d) aren't equal",of.get_uri()
+			else:
+				print "missing file",of.get_uri()
 			if copy:
 				parent = of.get_parent()
 				if not ciexists(parent):
