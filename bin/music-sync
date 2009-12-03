@@ -157,7 +157,7 @@ def _walker(root):
 		else:
 			raise
 	yield (root,tuple(dirs),files)
-	for d in dirs:
+	for d in sorted(dirs):
 		for ret in _walker(root.get_child(d)):
 			yield ret
 
@@ -169,7 +169,7 @@ for root,dirs,files in walk(roots[0]):
 	if len(dirs)>0:
 		dirs = sorted(list(dirs))
 		#print "dirs",dirs
-	for x in files:
+	for x in sorted(files):
 		if x.find("mp3")==-1 and x.find("ogg")==-1:
 			continue
 		f = root.get_child(x).get_path()[len(roots[0].get_path())+1:]
