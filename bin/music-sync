@@ -10,13 +10,12 @@ from optparse import OptionParser
 import gio, gtk, gobject, glib
 from sys import exit
 
-parser = OptionParser(usage="Usage: %prog [options] <destination path>")
+parser = OptionParser(usage="Usage: %prog [options] <source path> <destination path>")
 parser.add_option("-c","--copy",dest="copy",default=False,action="store_true",help="Copy missing files")
-parser.add_option("-s","--source",dest="source",default=".",type="string",help="Source path (Default: current directory)")
 (opts,args) = parser.parse_args()
 
-if len(args)!=1:
-	parser.error("Need a destination path")
+if len(args)!=2:
+	parser.error("Need a source and destination path!")
 
 copy = opts.copy
 
@@ -39,7 +38,7 @@ def FileWithPassword(commandline):
 	ret._password = password
 	return ret
 
-roots = [FileWithPassword(opts.source),FileWithPassword(args[0])]
+roots = [FileWithPassword(args[0]),FileWithPassword(args[1])]
 
 def password(mo, prompt,username,password, flags, vol):
 	if password == "" and vol._password!=None:
