@@ -165,10 +165,7 @@ def walk(root):
 	for ret in _walker(root):
 		yield ret
 
-for root,dirs,files in walk(roots[0]):
-	if len(dirs)>0:
-		dirs = sorted(list(dirs))
-		#print "dirs",dirs
+for root,_,files in walk(roots[0]):
 	for x in sorted(files):
 		if x.find("mp3")==-1 and x.find("ogg")==-1:
 			continue
