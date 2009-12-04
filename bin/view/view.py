@@ -3,8 +3,7 @@
 import pygame,os
 from pygame.locals import *
 from directory import Directory
-from sys import argv
-from os.path import dirname,join
+from os.path import dirname,join,realpath
 
 class Viewer:
 	def __init__(self,dir):
@@ -13,8 +12,7 @@ class Viewer:
 		modes = pygame.display.list_modes()
 		self.screen = pygame.display.set_mode(modes[0],pygame.FULLSCREEN)
 		self.loc = Directory(dir)
-		print argv
-		self.myfont = pygame.font.Font(join(dirname(argv[0]),"verdana.ttf"),32)
+		self.myfont = pygame.font.Font(join(dirname(realpath(__file__)),"verdana.ttf"),32)
 		self.index = 0
 		self.list = [".."]+self.loc.listdir()
 		self.collen = int((self.screen.get_size()[1]*1.0)/self.myfont.size(self.list[1])[1])
