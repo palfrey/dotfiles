@@ -149,6 +149,8 @@ def _walker(root):
 				dirs.append(name)
 			elif kind == gio.FILE_TYPE_REGULAR:
 				files.append(name)
+			elif kind == gio.FILE_TYPE_SPECIAL: # can't sync these
+				pass
 			else:
 				raise Exception,kind
 	except gio.Error,e:
