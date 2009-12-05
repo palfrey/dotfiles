@@ -190,5 +190,5 @@ for root,_,files in walk(roots[0]):
 					print "making %s"%parent.get_uri()
 					parent.make_directory_with_parents(gio.Cancellable())
 				print "%s => %s"%(f.get_uri(),of.get_uri())
-				f.copy(of)
+				f.copy(of,flags=gio.FILE_COPY_OVERWRITE)
 				
