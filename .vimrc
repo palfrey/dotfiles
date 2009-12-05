@@ -73,3 +73,5 @@ set pastetoggle=<F4>
 if hostname() == "shostakovich"
 	set guifont=Droid\ Sans\ Mono\ 14
 endif
+
+autocmd FileType python set noet
