@@ -15,3 +15,5 @@ fi
 export VIMGUI=gtk
 alias vi='vim'
 alias ack='ack-grep'
+
+export PATH=$PATH:/var/lib/gems/1.8/bin
