@@ -126,8 +126,7 @@ def cipath(path): # case insensitive path
 			#print "sofar",sofar
 			for x in sofar.enumerate_children(",".join([gio.FILE_ATTRIBUTE_STANDARD_NAME,gio.FILE_ATTRIBUTE_STANDARD_TYPE])):
 				if item.lower() == x.get_name().lower():
-					print "found",x,item
-					sofar += sep+x
+					sofar = sofar.get_child(x.get_name())
 					break
 			else:
 				return path
