@@ -12,6 +12,7 @@ from sys import exit
 
 parser = OptionParser(usage="Usage: %prog [options] <source path> <destination path>")
 parser.add_option("-c","--copy",dest="copy",default=False,action="store_true",help="Copy missing files")
+parser.add_option("--only-missing",dest="only_missing",default=False,action="store_true",help="Only report/copy missing files")
 (opts,args) = parser.parse_args()
 
 if len(args)!=2:
@@ -181,10 +182,11 @@ for root,_,files in walk(roots[0]):
 			sof = 0
 		if not ciexists(of) or sf!=sof:
 			if ciexists(of):
-				print "filesizes (%d, %d) aren't equal"%(sf,sof),of.get_uri()
+				if not opts.only_missing:
+					print "filesizes (%d, %d) aren't equal"%(sf,sof),of.get_uri()
 			else:
 				print "missing file",of.get_uri()
-			if copy:
+			if copy and (not opts.only_missing or not ciexists(of)):
 				parent = of.get_parent()
 				if not ciexists(parent):
 					print "making %s"%parent.get_uri()
