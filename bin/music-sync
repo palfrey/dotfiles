@@ -181,7 +181,7 @@ for root,_,files in walk(roots[0]):
 			sof = 0
 		if not ciexists(of) or sf!=sof:
 			if ciexists(of):
-				print "filesizes (%d, %d) aren't equal",of.get_uri()
+				print "filesizes (%d, %d) aren't equal"%(sf,sof),of.get_uri()
 			else:
 				print "missing file",of.get_uri()
 			if copy:
