@@ -4,6 +4,7 @@ import pygame,os
 from pygame.locals import *
 from directory import Directory
 from os.path import dirname,join,realpath
+from sys import argv
 
 class Viewer:
 	def __init__(self,dir):
@@ -203,8 +204,10 @@ class Viewer:
 				raise
 
 try:
-	#Viewer(r"f:\\temp\\flirts")
-	Viewer(os.getcwd())
+	if len(argv) == 1:
+		Viewer(os.getcwd())
+	else:
+		Viewer(realpath(argv[1]))
 except:
 	print "err"
 	raise
