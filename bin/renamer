@@ -70,6 +70,7 @@ for x in files:
 		continue
 	if len(x)>4 and x[-4] == ".":
 		end = x[-3:]
+		x = x[:-4]
 	else:
 		end = ""
 	sp = ["_"," "]
@@ -100,7 +101,6 @@ for x in files:
 		for n in z:
 			out+=n.split(s)
 		z = out
-	z = z[:-1]
 	if opts.series == None:
 		eps = None
 	else:
@@ -173,6 +173,9 @@ for x in files:
 	for z in range(len(new)):
 		if new[z] in invalid:
 			new = new[:z] +"_"+new[z+1:]
+
+	if end != "":
+		x = "%s.%s"%(x,end)
 
 	if x!=new:
 		print "'%s' => '%s'"%(x,new)
