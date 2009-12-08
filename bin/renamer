@@ -36,7 +36,8 @@ except:
 
 def epguides(name):
 	data = cache.get("http://epguides.com/%s/"%name,max_age=60*60*24*2).read()
-	patt = re.compile("\d+.\s+(\d+)-([\s\d]+)\s*(?:[\dA-Z\-()]+)?\s+(\d+ [A-Z][a-z]+ \d+)?\s+<a target=\"(?:visit|_blank)\" href=\"[^\"]+\">([^<]+)</a>")
+	patt = re.compile("\d+.\s+(\d+)-(.+?)\s+(?:[\dA-Z\-()]+)?\s+(\d+ [A-Z][a-z]+ \d+)?\s+<a target=\"(?:visit|_blank)\" href=\"[^\"]+\">([^<]+)</a>")
+	#patt =   compile("(\d+).\s+(\d+)-(.+?)\s+(?:[\dA-Z\-]+)?\s+(\d+ [A-Z][a-z]+ \d+)?\s+<a target=\"(?:visit|_blank)\" href=\"[^\"]+\">([^<]+)</a>")
 	eps = patt.findall(data)
 	if len(eps) ==0:
 		raise Exception
@@ -52,6 +53,7 @@ def epguides(name):
 			n[2] = None
 		n[1] = n[1][:2]
 		#print n[0:2]
+		entitydefs["#039"] = "'"
 		for e in entitydefs:
 			n[3] = n[3].replace("&%s;"%e,entitydefs[e])
 		neweps[tuple([int(x) for x in n[0:2]])] = n[3]
