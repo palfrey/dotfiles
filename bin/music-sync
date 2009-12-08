@@ -9,6 +9,7 @@
 from optparse import OptionParser
 import gio, gtk, gobject, glib
 from sys import exit
+from urllib import unquote
 
 parser = OptionParser(usage="Usage: %prog [options] <source path> <destination path>")
 parser.add_option("-c","--copy",dest="copy",default=False,action="store_true",help="Copy missing files")
@@ -171,10 +172,10 @@ for root,_,files in walk(roots[0]):
 	for x in sorted(files):
 		if x.find("mp3")==-1 and x.find("ogg")==-1:
 			continue
-		f = root.get_child(x).get_path()[len(roots[0].get_path())+1:]
+		f = unquote(root.get_child(x).get_uri()[len(roots[0].get_uri())+1:])
 		of = cipath(roots[1].get_child(f))
 		f = root.get_child(x)
-		#print "f",f,of
+		#print "f",f,of.get_uri()
 		sf = f.query_info(gio.FILE_ATTRIBUTE_STANDARD_SIZE).get_size()
 		if ciexists(of):
 			sof = of.query_info(gio.FILE_ATTRIBUTE_STANDARD_SIZE).get_size()
