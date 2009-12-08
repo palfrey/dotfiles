@@ -23,6 +23,7 @@ parser.add_option("-v","--verbose",default=False,action="store_true",dest="verbo
 parser.add_option("-p","--prepend",default="",action="store",type="string",dest="prepend")
 parser.add_option("-n","--no-overwrite",default=True,action="store_false",dest="overwrite")
 parser.add_option("-k","--keep-hyphens",default=True,action="store_false",dest="drop_hyphens")
+parser.add_option("-d","--keep-dots",default=True,action="store_false",dest="drop_dots")
 (opts,args) = parser.parse_args()
 
 try:
@@ -69,9 +70,11 @@ for x in files:
 		end = x[-3:]
 	else:
 		end = ""
-	sp = [".","_"," "]
+	sp = ["_"," "]
 	if opts.drop_hyphens:
 		sp.append("-")
+	if opts.drop_dots:
+		sp.append(".")
 	ch = opts.prepend+x
 	ch = ch.replace("Season ","S")
 	ch = ch.replace("Episode ","E")
