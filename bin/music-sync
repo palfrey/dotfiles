@@ -184,14 +184,14 @@ for root,_,files in walk(roots[0]):
 		if not ciexists(of) or sf!=sof:
 			if ciexists(of):
 				if not opts.only_missing:
-					print "filesizes (%d, %d) aren't equal"%(sf,sof),of.get_uri()
+					print "filesizes (%d, %d) aren't equal"%(sf,sof),unquote(of.get_uri())
 			else:
-				print "missing file",of.get_uri()
+				print "missing file",unquote(of.get_uri())
 			if copy and (not opts.only_missing or not ciexists(of)):
 				parent = of.get_parent()
 				if not ciexists(parent):
-					print "making %s"%parent.get_uri()
+					print "making %s"%unquote(parent.get_uri())
 					parent.make_directory_with_parents(gio.Cancellable())
-				print "%s => %s"%(f.get_uri(),of.get_uri())
+				print "%s => %s"%(unquote(f.get_uri()),unquote(of.get_uri()))
 				f.copy(of,flags=gio.FILE_COPY_OVERWRITE)
 				
