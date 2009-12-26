@@ -88,8 +88,10 @@ alias today='ps -ef|grep "[[:digit:]] [[:digit:]][[:digit:]]:[[:digit:]][[:digit
 export DEBFULLNAME=Tom\ Parker
 export DEBEMAIL=debian@tevp.net
 
-# drop caps lock entirely
-xmodmap -e "remove lock = Caps_Lock"
+if [[ "x$DISPLAY" != "x" ]]; then
+	# drop caps lock entirely
+	xmodmap -e "remove lock = Caps_Lock"
+fi
 
 # searching for specified string
 bindkey "^R"    history-incremental-search-backward
