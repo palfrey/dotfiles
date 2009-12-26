@@ -194,4 +194,6 @@ for root,_,files in walk(roots[0]):
 					parent.make_directory_with_parents(gio.Cancellable())
 				print "%s => %s"%(unquote(f.get_uri()),unquote(of.get_uri()))
 				f.copy(of,flags=gio.FILE_COPY_OVERWRITE)
+			else:
+				print "missing file",unquote(of.get_uri())
 				
