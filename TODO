@@ -1,0 +1,13 @@
+- Python slides for both Hackspace and Software Club
+- Comicsgrab server
+- Fix House numbering on epgrabber
+- Improved Twitter API with old-style RTs done as new ones
+- Fix palfrey.github.com and /urlgrab
+- Docs for urlgrab. Epydoc? Strip out exported junk. Then do a 1.0 release
+- Finish amee-python
+- GUI editor for protocol buffer data
+- github badge for Facebook (see github-badges)
+- Check bugs in iplayer coherence backend (plus update to latest and greatest)
+- Fix comicsgrab timezone handling (see issue #3)
+- Pull github repos into website (start from http://github.com/api/v2/xml/repos/show/palfrey)
+- Fix Twitux Gtk label issues
