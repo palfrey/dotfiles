@@ -56,7 +56,7 @@ map <C-P> :bp!<CR>
 set mouse=a
 
 " Dos2unix (remove the ^M's)
-cab du 1,$s///
+command DU 1,$s///
 
 set formatoptions=tcq
 filetype indent on
