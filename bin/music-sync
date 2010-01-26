@@ -7,7 +7,7 @@
 # gio.File.make_directory_with_parents() *needs* an arg!
 
 from optparse import OptionParser
-import gio, gtk, gobject, glib
+import gio, gobject, glib
 from sys import exit
 from urllib import unquote
 
