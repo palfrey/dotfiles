@@ -60,6 +60,17 @@ def epguides(name):
 	#print neweps
 	return neweps
 
+try:
+	import fetch
+	def epguides(name):
+		inf = {"cache":cache,"core":(lambda i,eps:eps)}
+		eps = {}
+		for (season, epnum, date,title) in fetch.epguides().run(inf,name):
+			eps[(int(season),int(epnum))] = title
+		return eps
+except ImportError:
+	pass
+
 if len(args)==0:
 	files = listdir('.')
 else:
