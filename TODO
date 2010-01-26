@@ -9,5 +9,5 @@
 - github badge for Facebook (see github-badges)
 - Check bugs in iplayer coherence backend (plus update to latest and greatest)
 - Fix comicsgrab timezone handling (see issue #3)
-- Pull github repos into website (start from http://github.com/api/v2/xml/repos/show/palfrey)
 - Fix Twitux Gtk label issues
+- Rewrite RT's that aren't using new API (and are just simple copies) on dabr/Twitux
