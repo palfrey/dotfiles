@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from os import listdir,rename,mkdir
+from os import listdir,rename,mkdir,sep
 import re
 from time import strptime
 from sys import argv,exit,modules
@@ -168,6 +168,7 @@ for x in files:
 			break
 			
 	new = " ".join([z.title() for z in ok])
+	new = new.replace("%s "%sep,sep)
 	if end!="":
 		new +="."+end
 	res = re.search(" (\d+X\d{2})",new)
