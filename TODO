@@ -1,7 +1,7 @@
 - Python slides for both Hackspace and Software Club
 - Comicsgrab server
 - Fix House numbering on epgrabber
-- Improved Twitter API with old-style RTs done as new ones
+- Improved Twitter API with old-style RTs done as new ones (use http://github.com/tav/tweetapp ?)
 - Fix palfrey.github.com and /urlgrab
 - Docs for urlgrab. Epydoc? Strip out exported junk. Then do a 1.0 release
 - Finish amee-python
