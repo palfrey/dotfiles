@@ -11,3 +11,4 @@
 - Fix comicsgrab timezone handling (see issue #3)
 - Fix Twitux Gtk label issues
 - Rewrite RT's that aren't using new API (and are just simple copies) on dabr/Twitux
+- Make a scraping client for http://petitions.number10.gov.uk/ that avoids repeatedly having to input details
