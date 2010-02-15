@@ -1,0 +1,7 @@
+style "desktop-icon"
+{
+	NautilusIconContainer::frame_text = 1
+	text[NORMAL] = "#000000"
+	#NautilusIconContainer::normal_alpha = 
+}
+class "GtkWidget" style "desktop-icon"
