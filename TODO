@@ -9,6 +9,6 @@
 - github badge for Facebook (see github-badges)
 - Check bugs in iplayer coherence backend (plus update to latest and greatest)
 - Fix comicsgrab timezone handling (see issue #3)
-- Fix Twitux Gtk label issues
+- Fix Twitux Gtk label issues (Use parasite? - http://chipx86.github.com/gtkparasite/)
 - Rewrite RT's that aren't using new API (and are just simple copies) on dabr/Twitux
 - Make a scraping client for http://petitions.number10.gov.uk/ that avoids repeatedly having to input details
