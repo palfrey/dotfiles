@@ -12,3 +12,4 @@
 - Fix Twitux Gtk label issues (Use parasite? - http://chipx86.github.com/gtkparasite/)
 - Rewrite RT's that aren't using new API (and are just simple copies) on dabr/Twitux
 - Make a scraping client for http://petitions.number10.gov.uk/ that avoids repeatedly having to input details
+- Investigate v8 (http://code.google.com/p/v8/) + Gjs (http://live.gnome.org/Gjs)
