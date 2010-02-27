@@ -104,6 +104,7 @@ EXEC 01;32
 .dl 01;35
 .xcf 01;35
 .xwd 01;35
+.mp4 01;35
 
 # audio formats
 .ogg 01;35
