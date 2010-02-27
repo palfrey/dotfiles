@@ -7,6 +7,8 @@ if [ -f /etc/zshrc ]; then
 	source /etc/zshrc
 fi
 
+export HGUSER=palfrey@tevp.net
+
 HOST=`hostname`
 DOMAIN=`hostname -d`
 
