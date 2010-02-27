@@ -169,7 +169,7 @@ def walk(root):
 
 for root,_,files in walk(roots[0]):
 	for x in sorted(files):
-		if x.find("mp3")==-1 and x.find("ogg")==-1 and x.find(".flac")==-1:
+		if x.find("mp3")==-1 and x.find("ogg")==-1 and x.find("flac")==-1 and x.find("m4a"):
 			continue
 		f = unquote(root.get_child(x).get_uri()[len(roots[0].get_uri())+1:])
 		of = cipath(roots[1].get_child(f))
