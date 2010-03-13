@@ -1,7 +1,6 @@
 - Python slides for both Hackspace and Software Club
 - Comicsgrab server
 - Fix House numbering on epgrabber
-- Improved Twitter API with old-style RTs done as new ones (use http://github.com/tav/tweetapp ?)
 - Fix palfrey.github.com and /urlgrab
 - Docs for urlgrab. Epydoc? Strip out exported junk. Then do a 1.0 release
 - Finish amee-python
@@ -10,6 +9,7 @@
 - Check bugs in iplayer coherence backend (plus update to latest and greatest)
 - Fix comicsgrab timezone handling (see issue #3)
 - Fix Twitux Gtk label issues (Use parasite? - http://chipx86.github.com/gtkparasite/)
+- Improved Twitter API with old-style RTs done as new ones (use http://github.com/tav/tweetapp ?)
 - Rewrite RT's that aren't using new API (and are just simple copies) on dabr/Twitux
 - Make a scraping client for http://petitions.number10.gov.uk/ that avoids repeatedly having to input details
 - Investigate v8 (http://code.google.com/p/v8/) + Gjs (http://live.gnome.org/Gjs)
