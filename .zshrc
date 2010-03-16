@@ -86,7 +86,9 @@ alias np='nautilus "`pwd`"'
 alias today='ps -ef|grep "[[:digit:]] [[:digit:]][[:digit:]]:[[:digit:]][[:digit:]] "'
 
 export DEBFULLNAME=Tom\ Parker
-export DEBEMAIL=debian@tevp.net
+if [[ "x$DEBEMAIL" == "x" ]]; then
+	export DEBEMAIL=palfrey@tevp.net
+fi
 
 # searching for specified string
 bindkey "^R"    history-incremental-search-backward
