@@ -1,0 +1,20 @@
+#!/bin/zsh
+
+if [ -f ~/.dircolors ]; then
+	eval `dircolors -b ~/.dircolors`
+else
+	eval `dircolors -b`
+fi
+
+export VISUAL=vim
+autoload -U compinit; compinit
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+if [[ $DISPLAY != "" ]]; then
+	xset -b
+fi
+export VIMGUI=gtk
+alias vi='vim'
+alias ack='ack-grep'
+
+export DEBEMAIL=tparker@lshift.net
+
