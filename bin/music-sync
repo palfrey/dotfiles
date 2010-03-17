@@ -119,19 +119,18 @@ def cipath(path): # case insensitive path
 	bits.reverse()
 	if bits[0] == "/":
 		bits = bits[1:]
-	#print "bits",bits
 
 	sofar = top_level
+	exists = True
 	for item in bits:
-		if not sofar.get_child(item).query_exists():
-			#print "item",item
-			#print "sofar",sofar
+		if exists and not sofar.get_child(item).query_exists():
 			for x in sofar.enumerate_children(",".join([gio.FILE_ATTRIBUTE_STANDARD_NAME,gio.FILE_ATTRIBUTE_STANDARD_TYPE])):
 				if item.lower() == x.get_name().lower():
 					sofar = sofar.get_child(x.get_name())
 					break
 			else:
-				return path
+				exists = False
+				sofar = sofar.get_child(item)
 		else:
 			sofar = sofar.get_child(item)
 	else:
