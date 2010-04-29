@@ -1,1 +1,2 @@
 --type-add=cc=.nc
+--type-add=csharp=ascx
