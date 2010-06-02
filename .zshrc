@@ -94,3 +94,5 @@ fi
 
 # searching for specified string
 bindkey "^R"    history-incremental-search-backward
+
+spawn() { nohup $* > /dev/null 2> /dev/null &; }
