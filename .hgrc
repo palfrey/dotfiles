@@ -1,0 +1,15 @@
+[ui]
+username = Tom Parker <palfrey@lshift.net>
+verbose = True
+
+[extensions]
+hgext.record =
+hgext.mq =
+hgext.git =
+color = 
+
+[merge-tools]
+kdiff.premerge = False
+
+[tortoisehg]
+editor = gvim
