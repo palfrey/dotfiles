@@ -84,7 +84,7 @@ alias ls='ls --color=auto -F'
 alias sc='screen -R'
 alias scl='screen -ls'
 alias j='jobs'
-alias np='nautilus "`pwd`"'
+alias np='xdg-open .'
 alias today='ps -ef|grep "[[:digit:]] [[:digit:]][[:digit:]]:[[:digit:]][[:digit:]] "'
 
 export DEBFULLNAME=Tom\ Parker
