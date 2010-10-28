@@ -76,6 +76,15 @@ if len(args)==0:
 else:
 	files = args
 
+if opts.series == None:
+	eps = None
+else:
+	if cache == None:
+		print "Can't find series data without URLGrab"
+		print "You need to install urlgrab for series capability. Get it using 'git clone git://github.com/palfrey/urlgrab.git urlgrab'"
+		exit(1)
+	eps = epguides(opts.series)
+
 for x in files:
 	if x[-3:].lower() not in endings and (len(args)==0 or not isdir(x)):
 		continue
@@ -112,14 +121,6 @@ for x in files:
 		for n in z:
 			out+=n.split(s)
 		z = out
-	if opts.series == None:
-		eps = None
-	else:
-		if cache == None:
-			print "Can't find series data without URLGrab"
-			print "You need to install urlgrab for series capability. Get it using 'git clone git://github.com/palfrey/urlgrab.git urlgrab'"
-			exit(1)
-		eps = epguides(opts.series)
 	#print z
 	#continue
 	ok = []
