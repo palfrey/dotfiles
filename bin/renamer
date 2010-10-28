@@ -208,8 +208,7 @@ for x in files:
 			if not opts.overwrite and exists(new):
 				print "Skipping, due to overwrite"
 			else:
-				rename(x,"blah")
-				rename("blah",new)
+				rename(x,new)
 	elif opts.verbose:
 		print x
 
