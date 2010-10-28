@@ -141,6 +141,7 @@ for x in files:
 					res = re.match("E(\d+)(\d{2})",n)
 				if x.find("Naruto")==-1 and x.find("Bleach")==-1 and res!=None and res.groups()[0]!="20" and int(res.groups()[1])<50 and int(res.groups()[1])!=0:
 					intg = tuple([int(b) for b in res.groups()])
+					newn = "%dx%02d"%intg
 					if eps!=None:
 						idx = z.index(n)
 						#print "intg",intg
@@ -148,13 +149,14 @@ for x in files:
 						#print "append",eps[intg],idx,z
 						z = z[:idx+1]
 						#print "append",eps[intg],idx,z
-						ok.append(n)
+						ok.append(newn)
 						ok.extend(eps[intg].split())
 						#print "append",eps[intg],idx,z
 						#print
 						break
-					n = "%dx%02d"%intg
-					cross = True
+					else:
+						n = newn
+						cross = True
 		if n!="":
 			ok.append(n)
 	
@@ -162,11 +164,18 @@ for x in files:
 		ok = ok[:-1]
 	
 	for pos in range(1,8):
-		if len(ok)>pos+1 and len(ok[pos])>1 and ok[pos][1] == "x" and len(ok[pos])==4: # i.e. YxZZ
+		if len(ok)>pos+1 and len(ok[pos])>3:
+			try:
+				blah = [int(z) for z in ok[pos].split("x")]
+				if len(blah)!=2:
+					continue
+			except ValueError:
+				continue
 			if ok[pos+1] != "-":
 				ok.insert(pos+1,"-")
 			break
 			
+	#print x,ok
 	new = " ".join([z.title() for z in ok])
 	new = new.replace("%s "%sep,sep)
 	if end!="":
