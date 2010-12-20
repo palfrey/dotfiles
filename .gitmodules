@@ -4,3 +4,6 @@
 [submodule "bin/iotop.git"]
 	path = bin/iotop.git
 	url = git://repo.or.cz/iotop.git
+[submodule "bin/hub-upstream"]
+	path = bin/hub-upstream
+	url = git://github.com/defunkt/hub.git

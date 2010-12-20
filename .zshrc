@@ -9,6 +9,8 @@ fi
 
 source ~/bin/lolbash.sh
 
+function git(){hub "$@"}
+
 export HGUSER=palfrey@tevp.net
 
 HOST=`hostname`
