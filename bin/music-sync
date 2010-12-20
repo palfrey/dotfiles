@@ -183,7 +183,10 @@ for root,_,files in walk(roots[0]):
 		if not ciexists(of) or sf!=sof:
 			if ciexists(of):
 				if not opts.only_missing:
-					print "filesizes (%d, %d) aren't equal"%(sf,sof),unquote(of.get_uri())
+					time_source = f.query_info(gio.FILE_ATTRIBUTE_TIME_MODIFIED).get_attribute_uint64(gio.FILE_ATTRIBUTE_TIME_MODIFIED)
+					time_dest = of.query_info(gio.FILE_ATTRIBUTE_TIME_MODIFIED).get_attribute_uint64(gio.FILE_ATTRIBUTE_TIME_MODIFIED)
+					if time_source > time_dest:
+						print "filesizes (%d, %d) aren't equal"%(sf,sof),unquote(of.get_uri())
 			else:
 				print "missing file",unquote(of.get_uri())
 			if copy and (not opts.only_missing or not ciexists(of)):
