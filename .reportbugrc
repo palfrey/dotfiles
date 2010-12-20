@@ -11,8 +11,8 @@ ui text
 realname "Tom Parker"
 # If nothing else works, remove the # at the beginning
 # of the following three lines:
-#no-cc
-#header "X-Debbugs-CC: debian@tevp.net"
-#smtphost bugs.debian.org
+no-cc
+header "X-Debbugs-CC: palfrey@tevp.net"
+smtphost reportbug.debian.org
 # You can add other settings after this line.  See
 # /etc/reportbug.conf for a full listing of options.
