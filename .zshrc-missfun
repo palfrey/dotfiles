@@ -16,5 +16,6 @@ export VIMGUI=gtk
 alias vi='vim'
 alias ack='ack-grep'
 
-export DEBEMAIL=tparker@lshift.net
+export PATH=$PATH:~/src/android/android-sdk-linux_86/tools/:/var/lib/gems/1.8/bin/
 
+export ANDROID=/home/palfrey/src/android/android-sdk-linux_86/
