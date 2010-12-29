@@ -1,0 +1,3 @@
+#!/bin/sh
+
+RUBYLIB=~/bin/hub-upstream/lib ~/bin/hub-upstream/bin/hub $@
