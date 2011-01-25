@@ -81,6 +81,7 @@ EXEC 01;32
 
 # image formats
 .jpg 01;35
+.JPG 01;35
 .jpeg 01;35
 .gif 01;35
 .bmp 01;35
@@ -105,6 +106,9 @@ EXEC 01;32
 .xcf 01;35
 .xwd 01;35
 .mp4 01;35
+.m4v 01;35
+.flv 01;35
+.wmv 01;35
 
 # audio formats
 .ogg 01;35
