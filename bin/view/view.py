@@ -156,8 +156,8 @@ class Viewer:
 				elif event.type is KEYDOWN:
 					if event.key == K_ESCAPE or event.key == K_BACKSPACE:
 						return
-					elif event.key == K_PAGEDOWN or event.key == K_PAGEUP:
-						if event.key == K_PAGEDOWN:
+					elif event.key in [K_PAGEDOWN, K_RIGHT, K_DOWN, K_PAGEUP, K_LEFT, K_UP]:
+						if event.key in [K_PAGEDOWN, K_RIGHT, K_DOWN]:
 							self.index = self.index + 1
 							if self.index>len(self.loc.listdir())-1:
 								self.index = len(self.loc.listdir())-1							
@@ -165,7 +165,6 @@ class Viewer:
 							self.index = self.index - 1
 							if self.index<0:
 								self.index = 0
-							
 						
 						image = self.get_image(self.loc.listdir()[self.index])
 						pygame.display.flip()
