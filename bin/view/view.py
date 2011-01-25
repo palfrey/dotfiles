@@ -199,7 +199,7 @@ class Viewer:
 					ratio = r[0]
 
 			print ratio,scr,image.get_size(),(image.get_size()[0]*ratio,image.get_size()[1]*ratio),self.screen.get_size()
-			image = pygame.transform.scale(image,(image.get_size()[0]*ratio,image.get_size()[1]*ratio))
+			image = pygame.transform.smoothscale(image,(image.get_size()[0]*ratio,image.get_size()[1]*ratio))
 			self.screen.fill((0,0,0))
 			self.screen.blit(image, ((self.screen.get_size()[0]-image.get_size()[0])/2, (self.screen.get_size()[1]-image.get_size()[1])/2))
 			return image
