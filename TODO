@@ -11,7 +11,6 @@
 - Improved Twitter API with old-style RTs done as new ones (use http://github.com/tav/tweetapp ?)
 - Rewrite RT's that aren't using new API (and are just simple copies) on dabr/Twitux
 - Write merged calendar for subset of google calendars
-- Make a scraping client for http://petitions.number10.gov.uk/ that avoids repeatedly having to input details
 - Investigate v8 (http://code.google.com/p/v8/) + Gjs (http://live.gnome.org/Gjs)
 - Port VASSAL board game engine (http://www.vassalengine.org/) to Android
 - Finish writing "take me home via TFL" app for Android
