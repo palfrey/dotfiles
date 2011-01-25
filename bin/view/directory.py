@@ -3,6 +3,7 @@ from rarfile import RarFile
 import os,re
 from types import *
 from StringIO import StringIO
+from shutil import rmtree
 
 class TreeRar(RarFile):
 	def rar_dirs(self,item):
@@ -126,6 +127,9 @@ class Directory:
 		self.dir = None
 		self.subdir = None
 		self.chdir(path)
+
+	def clear_dir(self):
+		self.dir = None
 	
 	def listdir(self):
 		if self.subdir!=None:
@@ -181,4 +185,12 @@ class Directory:
 			return self.subdir.open(filename)
 		
 		return file(os.path.join(self.path,filename),'rb')
-						
+		
+	def delete(self,filename):
+		fullpath = os.path.join(self.path,filename)
+		print "delete",fullpath
+		if os.path.isdir(fullpath):
+			rmtree(fullpath)
+		else:
+			os.remove(fullpath)
+

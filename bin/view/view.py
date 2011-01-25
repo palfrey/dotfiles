@@ -95,6 +95,13 @@ class Viewer:
 						self.index = len(self.list)-1
 					elif event.key == K_HOME:
 						self.index = 0
+					elif event.key == K_DELETE:
+						self.loc.delete(self.list[self.index])
+						self.loc.clear_dir()
+						self.list = [".."]+self.loc.listdir()
+						if self.index == len(self.list):
+							self.index -=1
+						self.draw_list()
 					else:
 						print "No binding for "+str(pygame.key.name(event.key))
 					if oldindex!=self.index or self.loc.path!=olddir:
