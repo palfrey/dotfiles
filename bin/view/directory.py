@@ -120,7 +120,7 @@ class ZipDir:
 		
 class Directory:
 	#sep = re.compile(r"((?:[A-Za-z]:)|(?:[A-Za-z0-9\-_ ,\.()\[\]]+)|#)|[/\\]")
-	sep = re.compile(r"((?:[A-Za-z]:)|(?:[#A-Za-z0-9\-_ ,!\'\.~()\[\]]+))|[/\\]")
+	sep = re.compile(r"((?:[A-Za-z]:)|(?:[&#A-Za-z0-9\-_ ,!\'\.~()\[\]]+))|[/\\]")
 
 	def __init__(self,path):
 		self.path = path
