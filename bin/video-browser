@@ -1,0 +1,235 @@
+#!/usr/bin/env python
+
+# example treeviewcolumn.py
+
+import pygtk
+pygtk.require('2.0')
+import gtk,gobject
+from os import listdir,makedirs,chdir,getcwd,remove
+from os.path import abspath,exists,expanduser,isdir,dirname,split,dirname
+from urllib import quote
+from md5 import md5
+from mimetypes import guess_type
+from sys import argv
+from shutil import rmtree
+from subprocess import call
+import threading
+
+class TreeViewColumnExample:
+
+	# close the window and quit
+	def delete_event(self, widget, event, data=None):
+		gtk.main_quit()
+		return False
+
+	def make_pb(self, tvcolumn, cell, model, iter):
+		stock = model.get_value(iter, 1)
+		print "blah",stock
+		pb = self.treeview.render_icon(stock, gtk.ICON_SIZE_MENU, None)
+		cell.set_property('pixbuf', pb)
+		return
+
+	def __init__(self):
+		theme = gtk.icon_theme_get_default()
+		self.foldericon = theme.load_icon("folder", 100, gtk.ICON_LOOKUP_USE_BUILTIN)
+		self.blankicon = theme.load_icon("empty", 100, gtk.ICON_LOOKUP_USE_BUILTIN)
+		self.cache = {}
+
+		# Create a new window
+		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+
+		self.window.set_title("Video browser")
+
+		#self.window.set_size_request(200, 200)
+
+		self.window.connect("delete_event", self.delete_event)
+
+		# create a liststore with one string column to use as the model
+		self.liststore = gtk.ListStore(str,gtk.gdk.Pixbuf,str)
+
+		# add a row with text and a stock item - color strings for
+		# the background
+
+		limit = 50
+		count = 0
+	
+		self.thumbs = gtk.IconView()
+		self.thumbs.set_model(self.liststore)
+		self.thumbs.set_text_column(0)
+		self.thumbs.set_pixbuf_column(1)
+		self.thumbs.set_columns(-1)
+		self.thumbs.connect('key-press-event', self.keyPressEvent)
+
+		vbox = gtk.VBox()
+		scroll = gtk.ScrolledWindow()
+		scroll.set_border_width(2)
+		scroll.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+		scroll.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_AUTOMATIC)
+		scroll.add(self.thumbs)
+		vbox.pack_start(scroll, True, True)
+		self.window.add(vbox)
+
+		self.window.show_all()
+		self.window.maximize()
+
+		self.add_items()
+
+	def add_items(self):
+		self.todo = []
+		for x in sorted(listdir("."), lambda x,y:cmp(x.lower(),y.lower())):
+			a = abspath(x)
+			if isdir(x):
+				self.liststore.append([x[:20],self.foldericon,x])
+			elif a in self.cache:
+				if self.cache[a]:
+					self.liststore.append([x[:20],self.cache[a],x])
+			else:
+				iter = self.liststore.append([x[:20],self.blankicon,x])
+				self.todo.append(self.liststore.get_path(iter))
+
+		gobject.idle_add(self.add_more_pics)
+		it = self.liststore.get_iter_first()
+		path = self.liststore.get_path(it)
+		self.thumbs.select_path(path)
+		self.thumbs.set_cursor(path)
+	
+	def add_more_pics(self):
+		if len(self.todo)> 0:
+			threading.Thread(target=self.add_more_pics_th).start()
+		return False
+
+	def add_more_pics_th(self):
+		while len(self.todo)>0:
+			try:
+				it = self.liststore.get_iter(self.todo[0])
+				break
+			except ValueError:
+				pass
+			finally:
+				self.todo = self.todo[1:]
+		x = self.liststore.get_value(it,2)
+		mime = guess_type(x)
+		print "doing",x,mime
+		if mime[0] and mime[0].find("video")==0:
+			pth ="file://%s"%quote(abspath(x))
+			md = md5(pth).hexdigest()
+			failpath = expanduser("~/.thumbnails/fail/totem-video-thumbnailer/%s.png"%md)
+			th = expanduser("~/.thumbnails/normal/%s.png"%md)
+			if not exists(dirname(th)):
+				makedirs(dirname(th))
+			if not exists(failpath) and not exists(th):
+				print "no thumbnail for",x,th
+				call(["totem-video-thumbnailer",x,th])
+				if not exists(th):
+					if not exists(dirname(failpath)):
+						makedirs(dirname(failpath))
+					open(failpath,"w").write(" ")
+			assert exists(th) or exists(failpath)
+			if exists(th):
+				print pth,th
+				pb = gtk.gdk.pixbuf_new_from_file(th)
+				self.liststore.set_value(it,1, pb)
+				self.cache[abspath(x)] = pb
+			else:
+				print "fail",pth,failpath
+		else:
+			print mime,x
+			self.cache[abspath(x)] = None
+			#gobject.idle_add(self.liststore.remove,it)
+		if len(self.todo)>0:
+			gobject.idle_add(self.add_more_pics)
+
+	def keyPressEvent(self, widget, event, data=None):
+		if event.keyval in [gtk.keysyms.Return]:
+			fname = self.liststore.get(self.liststore.get_iter(widget.get_selected_items()[0]),2)[0]
+			if isdir(fname):
+				chdir(fname)
+				self.liststore.clear()
+				self.add_items()
+			else:
+				threading.Thread(target=call,args=(["mplayer","-fs",fname],)).start()
+			return True
+		elif event.keyval in [gtk.keysyms.BackSpace]:
+			last = split(getcwd())[1]
+			chdir("..")
+			self.liststore.clear()
+			self.add_items()
+			
+			it = self.liststore.get_iter_first()
+			while it:
+				path = self.liststore.get_value(it, 2)
+				end = split(path)[1]
+				if end == last:
+					path = self.liststore.get_path(it)
+					self.thumbs.select_path(path)
+					self.thumbs.set_cursor(path)
+					self.thumbs.scroll_to_path(path, False, 0,0)
+					print "found", path
+					break
+				it = self.liststore.iter_next(it)
+			return True
+		elif event.keyval in [gtk.keysyms.Delete]:
+			it = self.liststore.get_iter(widget.get_selected_items()[0])
+			widget.unselect_path(self.liststore.get_string_from_iter(it))
+			fname = self.liststore.get(it,2)[0]
+
+			curr = self.liststore.get_iter_first()
+			last = curr
+			while self.liststore.get_path(curr)!=self.liststore.get_path(it) and curr != None:
+				last = curr
+				curr = self.liststore.iter_next(curr)
+
+			path = self.liststore.get_string_from_iter(last)
+			oldpath = self.liststore.get_string_from_iter(it)
+			print "last", last, path, oldpath
+			self.liststore.remove(it)
+
+			try:
+				revised = self.liststore.get_iter_from_string(oldpath)
+				path = oldpath
+			except ValueError:
+				pass
+				
+			widget.select_path(path)
+			self.thumbs.set_cursor(path)
+
+			if isdir(fname):
+				rmtree(fname)
+			else:
+				remove(fname)
+			return True
+		elif event.keyval in [gtk.keysyms.Right]:
+			it = self.liststore.get_iter(widget.get_selected_items()[0])
+			it = self.liststore.iter_next(it)
+			if it!=None:
+				path = self.liststore.get_path(it)
+				self.thumbs.select_path(path)
+				self.thumbs.set_cursor(path)
+				self.thumbs.scroll_to_path(path, False, 0,0)
+				return True
+		elif event.keyval in [gtk.keysyms.Left]:
+			it = self.liststore.get_iter(widget.get_selected_items()[0])
+			curr = self.liststore.get_iter_first()
+			last = None
+			while self.liststore.get_path(curr)!=self.liststore.get_path(it) and curr != None:
+				last = curr
+				curr = self.liststore.iter_next(curr)
+
+			if last!=None:
+				path = self.liststore.get_path(last)
+				self.thumbs.select_path(path)
+				self.thumbs.set_cursor(path)
+				self.thumbs.scroll_to_path(path, False, 0,0)
+				return True
+
+		return False
+		
+def main():
+	gobject.threads_init()
+	gtk.main()
+
+if __name__ == "__main__":
+	if len(argv)>1:
+		chdir(argv[1])
+	tvcexample = TreeViewColumnExample()
+	main()
