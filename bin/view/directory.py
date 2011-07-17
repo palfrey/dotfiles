@@ -135,9 +135,8 @@ class Directory:
 		if self.subdir!=None:
 			return self.subdir.listdir()
 		
-		if self.dir == None:
-			self.dir = os.listdir(self.path)
-			self.dir.sort()
+		self.dir = os.listdir(self.path)
+		self.dir.sort()
 		return self.dir
 	
 	def isfile(self,filename):
