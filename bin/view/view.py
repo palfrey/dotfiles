@@ -72,6 +72,7 @@ class Viewer:
 							else:
 								self.index -=1
 								self.browser()
+								self.list = [".."]+self.loc.listdir()
 								self.index +=1
 								self.draw_list()
 						else:
@@ -101,6 +102,9 @@ class Viewer:
 						self.list = [".."]+self.loc.listdir()
 						if self.index == len(self.list):
 							self.index -=1
+						self.draw_list()
+					elif event.key == K_r:
+						self.list = [".."]+self.loc.listdir()
 						self.draw_list()
 					else:
 						print "No binding for "+str(pygame.key.name(event.key))
