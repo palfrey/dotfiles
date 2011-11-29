@@ -24,6 +24,7 @@ parser.add_option("-p","--prepend",default="",action="store",type="string",dest=
 parser.add_option("-n","--no-overwrite",default=True,action="store_false",dest="overwrite")
 parser.add_option("-k","--keep-hyphens",default=True,action="store_false",dest="drop_hyphens")
 parser.add_option("-d","--keep-dots",default=True,action="store_false",dest="drop_dots")
+parser.add_option("--leave-directories",default=False,action="store_true",dest="leave_directories")
 (opts,args) = parser.parse_args()
 
 try:
@@ -86,7 +87,9 @@ else:
 	eps = epguides(opts.series)
 
 for x in files:
-	if x[-3:].lower() not in endings and (len(args)==0 or not isdir(x)):
+	if x[-3:].lower() not in endings:
+		continue
+	if opts.leave_directories and (len(args)==0 or not isdir(x)):
 		continue
 	if len(x)>4 and x[-4] == ".":
 		end = x[-3:]
