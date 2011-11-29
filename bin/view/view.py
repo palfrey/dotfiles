@@ -130,7 +130,9 @@ class Viewer:
 				max_x = self.myfont.size(f)[0]
 				
 		firstdraw = 0
-		while self.index-firstdraw>self.collen*int(self.screen.get_size()[0]/(max_x*1.0)):
+		width = self.screen.get_size()[0]
+
+		while self.index-firstdraw>self.collen*int(width/(max_x*1.0)):
 			if firstdraw+self.collen>self.index:
 				break
 			firstdraw += self.collen
@@ -142,6 +144,8 @@ class Viewer:
 			if y == self.collen:
 				y = 0
 				x += max_x+min_x
+				if x > width:
+					break
 			if self.index == i:
 				self.screen.blit(self.myfont.render(f,True,(255,255,255),(255,0,0)),(x,y*height))
 			else:
