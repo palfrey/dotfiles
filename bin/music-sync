@@ -4,10 +4,10 @@
 # file bugs about not supporting sftp://username:password@host.
 # Also, sftp://u:p@h comes out as sftp://u@h in mounts, but not in the file when mounted...
 #
-# gio.File.make_directory_with_parents() *needs* an arg!
+# Gio.File.make_directory_with_parents() *needs* an arg!
 
 from optparse import OptionParser
-import gio, gobject, glib
+from gi.repository import Gio, GObject, GLib
 from sys import exit
 from urllib import unquote
 
@@ -36,7 +36,7 @@ def FileWithPassword(commandline):
 		commandline = commandline[:colon2]+commandline[at:]
 	else:
 		password = None
-	ret = gio.File(commandline)
+	ret = Gio.file_new_for_commandline_arg(commandline)
 	ret._password = password
 	return ret
 
@@ -47,7 +47,7 @@ def password(mo, prompt,username,password, flags, vol):
 		password = vol._password
 	mo.set_username(username)
 	mo.set_password(password)
-	mo.reply(gio.MOUNT_OPERATION_HANDLED)
+	mo.reply(Gio.MOUNT_OPERATION_HANDLED)
 
 def mount_callback(volume, result):
 	global mount_issues
@@ -58,7 +58,7 @@ def mount_callback(volume, result):
 		else:
 			print "Error while mounting %s!"%volume.get_uri()
 			mount_issues = True
-	except (gio.Error,glib.GError),e:
+	except (Gio.Error,glib.GError),e:
 		print "Exception while mounting %s: %s"%(volume.get_uri(),e.message)
 		mount_issues = True
 	global tomount
@@ -74,12 +74,13 @@ for r in roots:
 	try:
 		if not r.is_native():
 			print "Trying to mount", r.get_uri(), "...",
-			r.find_enclosing_mount()
+			r.find_enclosing_mount(None)
 			print "which is already mounted"
 	except Exception, e:
-		print
+		if not hasattr(e, "code"):
+			raise
 		if e.code == 16: # not mounted
-			mo = gio.MountOperation()
+			mo = Gio.MountOperation()
 			mo.connect("ask-password",password,r)
 			r.mount_enclosing_volume(mo,mount_callback)
 			tomount +=1
@@ -100,14 +101,14 @@ missing = []
 def ciexists(path): # case insensitive exists
 	pth = cipath(path)
 	if pth!=None:
-		return pth.query_exists()
+		return pth.query_exists(None)
 	else:
 		print "problem constructing",path
 		raise Exception
 		return False
 
 def cipath(path): # case insensitive path
-	if path == None or path.query_exists():
+	if path == None or path.query_exists(None):
 		return path
 	#print "path",path
 	bits = []
@@ -123,8 +124,8 @@ def cipath(path): # case insensitive path
 	sofar = top_level
 	exists = True
 	for item in bits:
-		if exists and not sofar.get_child(item).query_exists():
-			for x in sofar.enumerate_children(",".join([gio.FILE_ATTRIBUTE_STANDARD_NAME,gio.FILE_ATTRIBUTE_STANDARD_TYPE])):
+		if exists and not sofar.get_child(item).query_exists(None):
+			for x in sofar.enumerate_children(",".join([Gio.FILE_ATTRIBUTE_STANDARD_NAME,Gio.FILE_ATTRIBUTE_STANDARD_TYPE]), Gio.FileQueryInfoFlags.NONE, None):
 				if item.lower() == x.get_name().lower():
 					sofar = sofar.get_child(x.get_name())
 					break
@@ -140,20 +141,22 @@ def _walker(root):
 	dirs = []
 	files = []
 	try:
-		for c in root.enumerate_children(",".join([gio.FILE_ATTRIBUTE_STANDARD_NAME,gio.FILE_ATTRIBUTE_STANDARD_TYPE])):
+		for c in root.enumerate_children(",".join([Gio.FILE_ATTRIBUTE_STANDARD_NAME,Gio.FILE_ATTRIBUTE_STANDARD_TYPE]), Gio.FileQueryInfoFlags.NONE, None):
 			name = c.get_name()
 			if name[0] == ".": # skip hidden folders:
 				continue
 			kind = c.get_file_type()
-			if kind == gio.FILE_TYPE_DIRECTORY:
+			if kind == Gio.FileType.DIRECTORY:
 				dirs.append(name)
-			elif kind == gio.FILE_TYPE_REGULAR:
+			elif kind == Gio.FileType.REGULAR:
 				files.append(name)
-			elif kind == gio.FILE_TYPE_SPECIAL: # can't sync these
+			elif kind == Gio.FileType.SPECIAL: # can't sync these
 				pass
 			else:
 				raise Exception,kind
-	except gio.Error,e:
+	except Exception, e:
+		if not hasattr(e, "code"):
+			raise
 		if e.code == 14: # permission denied
 			raise Exception, "Couldn't access %s. Do you have sufficient permissions?"%root.get_uri()
 		else:
@@ -167,6 +170,9 @@ def walk(root):
 	for ret in _walker(root):
 		yield ret
 
+def catchall(*args):
+	pass
+
 for root,_,files in walk(roots[0]):
 	for x in sorted(files):
 		if x.find("mp3")==-1 and x.find("ogg")==-1 and x.find("m4a")==-1:
@@ -175,16 +181,16 @@ for root,_,files in walk(roots[0]):
 		of = cipath(roots[1].get_child(f))
 		f = root.get_child(x)
 		#print "f",f,of.get_uri()
-		sf = f.query_info(gio.FILE_ATTRIBUTE_STANDARD_SIZE).get_size()
+		sf = f.query_info(Gio.FILE_ATTRIBUTE_STANDARD_SIZE, Gio.FileQueryInfoFlags.NONE, None).get_size()
 		if ciexists(of):
-			sof = of.query_info(gio.FILE_ATTRIBUTE_STANDARD_SIZE).get_size()
+			sof = of.query_info(Gio.FILE_ATTRIBUTE_STANDARD_SIZE, Gio.FileQueryInfoFlags.NONE, None).get_size()
 		else:
 			sof = 0
 		if not ciexists(of) or sf!=sof:
 			if ciexists(of):
 				if not opts.only_missing:
-					time_source = f.query_info(gio.FILE_ATTRIBUTE_TIME_MODIFIED).get_attribute_uint64(gio.FILE_ATTRIBUTE_TIME_MODIFIED)
-					time_dest = of.query_info(gio.FILE_ATTRIBUTE_TIME_MODIFIED).get_attribute_uint64(gio.FILE_ATTRIBUTE_TIME_MODIFIED)
+					time_source = f.query_info(Gio.FILE_ATTRIBUTE_TIME_MODIFIED, Gio.FileQueryInfoFlags.NONE, None).get_attribute_uint64(Gio.FILE_ATTRIBUTE_TIME_MODIFIED)
+					time_dest = of.query_info(Gio.FILE_ATTRIBUTE_TIME_MODIFIED, Gio.FileQueryInfoFlags.NONE, None).get_attribute_uint64(Gio.FILE_ATTRIBUTE_TIME_MODIFIED)
 					if time_source > time_dest:
 						print "filesizes (%d, %d) aren't equal"%(sf,sof),unquote(of.get_uri())
 			else:
@@ -193,7 +199,7 @@ for root,_,files in walk(roots[0]):
 				parent = of.get_parent()
 				if not ciexists(parent):
 					print "making %s"%unquote(parent.get_uri())
-					parent.make_directory_with_parents(gio.Cancellable())
+					parent.make_directory_with_parents(Gio.Cancellable())
 				print "%s => %s"%(unquote(f.get_uri()),unquote(of.get_uri()))
-				f.copy(of,flags=gio.FILE_COPY_OVERWRITE)
+				f.copy(of,Gio.FileCopyFlags.OVERWRITE, None, catchall, None)
 				
