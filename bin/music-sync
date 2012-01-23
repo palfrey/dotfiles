@@ -43,13 +43,14 @@ def FileWithPassword(commandline):
 roots = [FileWithPassword(args[0]),FileWithPassword(args[1])]
 
 def password(mo, prompt,username,password, flags, vol):
-	if password == "" and vol._password!=None:
-		password = vol._password
+	print "got password query '%s' '%s'"%( username, password), flags, vol
+	if username.find(":")!=-1 and password == '':
+		(username,password) = username.split(":")
 	mo.set_username(username)
 	mo.set_password(password)
-	mo.reply(Gio.MOUNT_OPERATION_HANDLED)
+	mo.reply(Gio.MountOperationResult.HANDLED)
 
-def mount_callback(volume, result):
+def mount_callback(volume, result, _junk):
 	global mount_issues
 	try:
 		res = r.mount_enclosing_volume_finish(result)
@@ -58,7 +59,7 @@ def mount_callback(volume, result):
 		else:
 			print "Error while mounting %s!"%volume.get_uri()
 			mount_issues = True
-	except (Gio.Error,glib.GError),e:
+	except GLib.GError,e:
 		print "Exception while mounting %s: %s"%(volume.get_uri(),e.message)
 		mount_issues = True
 	global tomount
@@ -82,7 +83,7 @@ for r in roots:
 		if e.code == 16: # not mounted
 			mo = Gio.MountOperation()
 			mo.connect("ask-password",password,r)
-			r.mount_enclosing_volume(mo,mount_callback)
+			r.mount_enclosing_volume(Gio.MountMountFlags.NONE, mo, None, mount_callback, None)
 			tomount +=1
 		elif e.code == 1: # "could not find enclosing mount"
 			print "Can't seem to use %s as a mount point (detailed error: %s)"%(r.get_uri(),e.message)
@@ -91,7 +92,7 @@ for r in roots:
 			raise
 
 if tomount >0:
-	ml = gobject.MainLoop()
+	ml = GObject.MainLoop()
 	ml.run()
 if mount_issues:
 	exit(1)
