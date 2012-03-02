@@ -77,3 +77,5 @@ elseif hostname() == "eris"
 endif
 
 autocmd FileType python set noet
+
+call pathogen#infect()
