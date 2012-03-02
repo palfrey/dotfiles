@@ -1,7 +1,5 @@
 " Vim
 
-color desert
-
 " Highly recommended to set tab keys to 4 spaces
 set shiftwidth=4
 set noet
@@ -79,3 +77,6 @@ endif
 autocmd FileType python set noet
 
 call pathogen#infect()
+
+set background=dark
+colorscheme solarized
