@@ -43,7 +43,7 @@ while True:
 		if status!=laststatus:
 			print "updating twitter"
 			passwds = HTTPPasswordMgrWithDefaultRealm()
-			passwds.add_password(None,"http://twitter.com/statuses/update.xml","palfrey","epsilon")
+			passwds.add_password(None,"http://twitter.com/statuses/update.xml","palfrey","")
 			opener = build_opener(HTTPBasicAuthHandler(passwds))
 			opener.open("http://twitter.com/statuses/update.xml","status=%s"%status)
 		else:
