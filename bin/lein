@@ -1,0 +1,298 @@
+#!/bin/sh
+
+LEIN_VERSION="2.0.0-preview6"
+export LEIN_VERSION
+
+case $LEIN_VERSION in
+    *SNAPSHOT) SNAPSHOT="YES" ;;
+    *) SNAPSHOT="NO" ;;
+esac
+
+# Make sure classpath is in unix format for manipulating, then put
+# it back to windows format when we use it
+if [ "$OSTYPE" = "cygwin" ] && [ "$CLASSPATH" != "" ]; then
+    CLASSPATH=`cygpath -up $CLASSPATH`
+fi
+
+if [ `whoami` = "root" ] && [ "$LEIN_ROOT" = "" ]; then
+    echo "WARNING: You're currently running as root; probably by accident."
+    echo "Press control-C to abort or Enter to continue as root."
+    echo "Set LEIN_ROOT to disable this warning."
+    read _
+fi
+
+NOT_FOUND=1
+ORIGINAL_PWD="$PWD"
+while [ ! -r "$PWD/project.clj" ] && [ "$PWD" != "/" ] && [ $NOT_FOUND -ne 0 ]
+do
+    cd ..
+    if [ "$(dirname "$PWD")" = "/" ]; then
+        NOT_FOUND=0
+        cd "$ORIGINAL_PWD"
+    fi
+done
+
+if [ "$LEIN_HOME" = "" ]; then
+    LEIN_HOME="$HOME/.lein"
+fi
+
+DEV_PLUGINS="$(ls -1 lib/dev/*jar 2> /dev/null)"
+USER_PLUGINS="$(ls -1 "$LEIN_HOME"/plugins/*jar 2> /dev/null)"
+
+artifact_name () {
+    echo "$1" | sed -e "s/.*\/\(.*\)/\1/" | \
+        rev | sed -e "s/raj[-[:digit:].]*-\(.*\)/\1/" | rev
+}
+
+unique_user_plugins () {
+    saveIFS="$IFS"
+    IFS="$(printf '\n\t')"
+
+    plugins="$(echo "$DEV_PLUGINS"; echo "$USER_PLUGINS")"
+    artifacts="$(for i in $plugins; do echo "$(artifact_name "$i")"; done)"
+    duplicates="$(echo "$artifacts" | sort | uniq -d)"
+
+    if [ -z "$duplicates" ]; then
+        echo "$USER_PLUGINS"
+    else
+        for i in $USER_PLUGINS; do
+            artifact="$(artifact_name "$i")"
+            if ! echo "$duplicates" | grep -xq "$artifact"; then
+                echo "$i"
+            fi
+        done
+    fi
+    IFS="$saveIFS"
+}
+
+LEIN_PLUGIN_PATH="$(echo "$DEV_PLUGINS" | tr \\n :)"
+LEIN_USER_PLUGIN_PATH="$(echo "$(unique_user_plugins)" | tr \\n :)"
+CLASSPATH="$CLASSPATH:$LEIN_PLUGIN_PATH:$LEIN_USER_PLUGIN_PATH:test/:src/"
+LEIN_JAR="$HOME/.lein/self-installs/leiningen-$LEIN_VERSION-standalone.jar"
+CLOJURE_JAR="$HOME/.m2/repository/org/clojure/clojure/1.2.0/clojure-1.2.0.jar"
+NULL_DEVICE=/dev/null
+
+# normalize $0 on certain BSDs
+if [ "$(dirname "$0")" = "." ]; then
+    SCRIPT="$(which $(basename "$0"))"
+else
+    SCRIPT="$0"
+fi
+
+# resolve symlinks to the script itself portably
+while [ -h "$SCRIPT" ] ; do
+    ls=`ls -ld "$SCRIPT"`
+    link=`expr "$ls" : '.*-> \(.*\)$'`
+    if expr "$link" : '/.*' > /dev/null; then
+        SCRIPT="$link"
+    else
+        SCRIPT="$(dirname "$SCRIPT"$)/$link"
+    fi
+done
+
+BIN_DIR="$(dirname "$SCRIPT")"
+
+if [ -r "$BIN_DIR/../src/leiningen/core.clj" ]; then
+    # Running from source checkout
+    LEIN_DIR="$(dirname "$BIN_DIR")"
+    LEIN_LIBS="$(find -H "$LEIN_DIR/lib" -mindepth 1 -maxdepth 1 -print0 2> /dev/null | tr \\0 \:)"
+    CLASSPATH="$CLASSPATH:$LEIN_LIBS:$LEIN_DIR/src:$LEIN_DIR/classes:$LEIN_DIR/resources:$LEIN_JAR"
+
+    if [ "$LEIN_LIBS" = "" -a "$1" != "self-install" -a ! -r "$LEIN_JAR" ]; then
+        echo "Leiningen is missing its dependencies. Please see \"Building\" in the README."
+        exit 1
+    fi
+else
+    # Not running from a checkout
+    CLASSPATH="$CLASSPATH:$LEIN_JAR"
+
+    if [ ! -r "$LEIN_JAR" -a "$1" != "self-install" ]; then
+        "$0" self-install
+    fi
+fi
+
+HTTP_CLIENT="wget --no-check-certificate -O"
+if type -p curl >/dev/null 2>&1; then
+    if [ "$https_proxy" != "" ]; then
+        CURL_PROXY="-x $https_proxy"
+    fi
+    HTTP_CLIENT="curl $CURL_PROXY --insecure -f -L -o"
+fi
+
+JAVA_CMD=${JAVA_CMD:-"java"}
+
+# Support $JAVA_OPTS for backwards-compatibility.
+JVM_OPTS=${JVM_OPTS:-$JAVA_OPTS}
+
+NAILGUN_DIR="$LEIN_HOME/nailgun-0.7.1"
+NAILGUN_JAR="$NAILGUN_DIR/nailgun-0.7.1.jar"
+NAILGUN_NG="$NAILGUN_DIR/ng"
+
+if [ -e $NAILGUN_JAR ] &&
+   [ -e $NAILGUN_NG ]; then
+    NAILGUN_EXISTS=true
+else
+    NAILGUN_EXISTS=false
+fi
+
+if $NAILGUN_EXISTS; then
+    case `$NAILGUN_NG ng-cp 2>&1` in
+        *refused*)
+            PERSISTENT=false
+            ;;
+        *)
+            PERSISTENT=true
+            ;;
+    esac
+else
+    PERSISTENT=false
+fi
+
+if [ "$1" = "persist" ]; then
+    if  ! $PERSISTENT ; then
+        if ! $NAILGUN_EXISTS; then
+            echo "Downloading nailgun ..."
+            $HTTP_CLIENT "$LEIN_HOME/nailgun.zip" "http://downloads.sourceforge.net/project/nailgun/nailgun/0.7.1/nailgun-src-0.7.1.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fnailgun%2Ffiles%2Fnailgun%2F0.7.1%2F&ts=1308168129&use_mirror=freefr"
+            if [ $? != 0 ]; then
+                echo "Failed to download nailgun"
+                exit 1
+            fi
+            echo "Unzipping nailgun"
+            unzip -d $LEIN_HOME $LEIN_HOME/nailgun.zip > /dev/null
+            echo "Building nailgun"
+            cd $NAILGUN_DIR
+            make 
+            cd -
+            rm $LEIN_HOME/nailgun.zip 2> /dev/null
+        else
+            echo "Starting nailgun server"
+            java -Dleiningen.original.pwd="$ORIGINAL_PWD" -jar $NAILGUN_JAR 1> $NAILGUN_DIR/log &  
+            sleep 1
+            $NAILGUN_NG ng-cp $LEIN_JAR 
+            $NAILGUN_NG ng-cp $ORIGINAL_PWD
+            $NAILGUN_NG ng-cp $ORIGINAL_PWD/src
+            $NAILGUN_NG ng-cp $ORIGINAL_PWD/classes
+            for lib in $(find ./lib)
+            do
+                $NAILGUN_NG ng-cp $ORIGINAL_PWD/$lib
+            done
+        fi
+    fi
+    exit 0
+fi
+
+if [ "$1" = "stop-persist" ]; then
+    if $PERSISTENT; then
+        echo "Stopping nailgun server"
+        $NAILGUN_NG ng-stop
+    fi
+    exit 0
+fi
+
+# If you're packaging this for a package manager (.deb, homebrew, etc)
+# you need to remove the self-install and upgrade functionality.
+if [ "$1" = "self-install" ]; then
+    echo "Downloading Leiningen now..."
+    LEIN_DIR=`dirname "$LEIN_JAR"`
+    mkdir -p "$LEIN_DIR"
+    LEIN_URL="https://github.com/downloads/technomancy/leiningen/leiningen-$LEIN_VERSION-standalone.jar"
+    $HTTP_CLIENT "$LEIN_JAR" "$LEIN_URL"
+    if [ $? != 0 ]; then
+        echo "Failed to download $LEIN_URL"
+        if [ $SNAPSHOT = "YES" ]; then
+            echo "If you have Maven installed, you can do"
+            echo "mvn dependency:copy-dependencies; mv target/dependency lib"
+            echo "See README.md for further SNAPSHOT build instructions."
+        fi
+        rm $LEIN_JAR 2> /dev/null
+        exit 1
+    fi
+elif [ "$1" = "upgrade" ]; then
+    # TODO: ensure we're not running from a checkout
+    if [ $SNAPSHOT = "YES" ]; then
+        echo "The upgrade task is only meant for stable releases."
+        echo "See the \"Hacking\" section of the README."
+        exit 1
+    fi
+    if [ ! -w "$SCRIPT" ]; then
+        echo "You do not have permission to upgrade the installation in $SCRIPT"
+        exit 1
+    else
+        echo "The script at $SCRIPT will be upgraded to the latest stable version."
+        echo -n "Do you want to continue [Y/n]? "
+        read RESP
+        case "$RESP" in
+            y|Y|"")
+                echo
+                echo "Upgrading..."
+                TARGET="/tmp/lein-$$-upgrade"
+                LEIN_SCRIPT_URL="https://github.com/technomancy/leiningen/raw/stable/bin/lein"
+                $HTTP_CLIENT "$TARGET" "$LEIN_SCRIPT_URL" \
+                    && mv "$TARGET" "$SCRIPT" \
+                    && chmod +x "$SCRIPT" \
+                    && echo && $SCRIPT self-install && echo && echo "Now running" `$SCRIPT version`
+                exit $?;;
+            *)
+                echo "Aborted."
+                exit 1;;
+        esac
+    fi
+else
+    if [ "$OSTYPE" = "cygwin" ]; then
+        # When running on Cygwin, use Windows-style paths for java
+        CLOJURE_JAR=`cygpath -w "$CLOJURE_JAR"`
+        ORIGINAL_PWD=`cygpath -w "$ORIGINAL_PWD"`
+        CLASSPATH=`cygpath -wp "$CLASSPATH"`
+        NULL_DEVICE=NUL
+    fi
+
+    if [ $DEBUG ]; then
+        echo $CLASSPATH
+        echo $CLOJURE_JAR
+    fi
+
+    JLINE=""
+    if ([ "$1" = "repl" ] || [ "$1" = "interactive" ] || [ "$1" = "int" ]) &&
+        [ -z $INSIDE_EMACS ] && [ "$TERM" != "dumb" ]; then
+        # Use rlwrap if it's available, otherwise fall back to JLine
+        RLWRAP=`which rlwrap`
+        if [ ! -x "$RLWRAP" ] || [ "$RLWRAP" = "" ]; then
+            if [ ! -r "$LEIN_HOME/.jline-warn" ]; then
+                echo "Using JLine for console I/O; install rlwrap for optimum experience."
+                touch "$LEIN_HOME/.jline-warn"
+            fi
+            RLWRAP=""
+            JLINE=jline.ConsoleRunner
+            if [ "$OSTYPE" = "cygwin" ]; then
+                JLINE="-Djline.terminal=jline.UnixTerminal jline.ConsoleRunner"
+                CYGWIN_JLINE=y
+            fi
+        else
+            # Test to see if rlwrap supports custom quote chars
+            rlwrap -m -q '"' echo "hi" > /dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                RLWRAP="$RLWRAP -m -q '\"'"
+            fi
+        fi
+    fi
+
+    # The -Xbootclasspath argument is optional here: if the jar
+    # doesn't exist everything will still work, it will just have a
+    # slower JVM boot.
+    test $CYGWIN_JLINE && stty -icanon min 1 -echo
+    if $PERSISTENT; then
+        if [ "$1" = "repl" ]; then
+            exec $RLWRAP $NAILGUN_NG clojure.main
+        else
+            exec $NAILGUN_NG clojure.main \
+                 -m leiningen.core.main $@
+        fi
+      #  --nailgun-Dleiningen.original.pwd="$ORIGINAL_PWD" \ # <- should be supported by nailgun, but isn't :(
+    else 
+        exec $RLWRAP $JAVA_CMD -Xbootclasspath/a:"$CLOJURE_JAR" -client $JVM_OPTS \
+        -Dleiningen.original.pwd="$ORIGINAL_PWD" \
+        -cp "$CLASSPATH" $JLINE clojure.main -m leiningen.core.main \
+        $NULL_DEVICE $@
+    fi
+    test $CYGWIN_JLINE && stty icanon echo
+fi
