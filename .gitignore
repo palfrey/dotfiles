@@ -3,7 +3,7 @@
 *.[oa]
 *~
 .history*
-.xsession-errors
+.xsession-errors*
 Desktop
 .wine
 .AbiSuite
@@ -32,6 +32,7 @@ Desktop
 .cups
 .cvsps
 .dbus
+.dropbox*
 .ddd
 .debug.keystore
 .dmrc
@@ -132,22 +133,12 @@ Desktop
 .windows-label
 .wishname
 .zcompdump
-Firefox_wallpaper.png
-IMAP
-That Cern thing explained.pdf
-WINDOWS
-WindowsDocuments
-calendar.user.js
-data
-documents
-experiments
-fex_spi.cfdg
-firefox
-gpml-matlab
-papers
-pervasive
-public-key
-public_html
-wsn
 .local
 .gvfs
+Dropbox
+src
+.compiz
+.mission-control
+Downloads
+.remmina
+.bash_history
