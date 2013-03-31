@@ -1,3 +1,6 @@
 #!/bin/zsh
 
 source /etc/zsh_command_not_found
+
+alias ack='ack-grep'
+
