@@ -142,3 +142,14 @@ src
 Downloads
 .remmina
 .bash_history
+
+.mono
+.pip
+.m2
+.lighttable
+.apport-ignore.xml
+.bashrc
+.bash_logout
+.bash_history
+.profile
+.skype-wrapper
