@@ -68,7 +68,7 @@ nmap <F4> \tp
 imap <F4> <C-O>\tp
 set pastetoggle=<F4>
 
-if hostname() == "lambic"
+if hostname() == "lambic" || hostname() == "faro"
 	set guifont=Droid\ Sans\ Mono\ 12
 else
 	set guifont=Droid\ Sans\ Mono\ 14
