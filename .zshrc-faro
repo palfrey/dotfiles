@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+if [ -f ~/.dircolors ]; then
+	eval `dircolors -b ~/.dircolors`
+else
+	eval `dircolors -b`
+fi
+
+autoload -U compinit; compinit
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+source /etc/zsh_command_not_found
+
+alias ack='ack-grep'
+

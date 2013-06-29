@@ -14,6 +14,7 @@ from urllib import unquote
 parser = OptionParser(usage="Usage: %prog [options] <source path> <destination path>")
 parser.add_option("-c","--copy",dest="copy",default=False,action="store_true",help="Copy missing files")
 parser.add_option("--only-missing",dest="only_missing",default=False,action="store_true",help="Only report/copy missing files")
+parser.add_option("--debug", dest="debug", default=False, action="store_true")
 (opts,args) = parser.parse_args()
 
 if len(args)!=2:
@@ -181,7 +182,8 @@ for root,_,files in walk(roots[0]):
 		f = unquote(root.get_child(x).get_uri()[len(roots[0].get_uri())+1:])
 		of = cipath(roots[1].get_child(f))
 		f = root.get_child(x)
-		#print "f",f,of.get_uri()
+		if opts.debug:
+			print "f",f,of.get_uri()
 		sf = f.query_info(Gio.FILE_ATTRIBUTE_STANDARD_SIZE, Gio.FileQueryInfoFlags.NONE, None).get_size()
 		if ciexists(of):
 			sof = of.query_info(Gio.FILE_ATTRIBUTE_STANDARD_SIZE, Gio.FileQueryInfoFlags.NONE, None).get_size()

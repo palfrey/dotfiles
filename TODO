@@ -1,4 +1,3 @@
-- Comicsgrab server
 - Fix palfrey.github.com and /urlgrab
 - Docs for urlgrab. Epydoc? Strip out exported junk. Then do a 1.0 release
 - Finish amee-python
