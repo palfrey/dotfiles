@@ -183,7 +183,11 @@ class Directory:
 		if self.subdir!=None:
 			return self.subdir.open(filename)
 		
-		return file(os.path.join(self.path,filename),'rb')
+		fullpath = os.path.join(self.path, filename)
+		if os.path.isdir(fullpath):
+			return None
+
+		return file(fullpath,'rb')
 		
 	def delete(self,filename):
 		fullpath = os.path.join(self.path,filename)
