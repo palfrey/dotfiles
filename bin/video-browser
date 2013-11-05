@@ -6,10 +6,10 @@ import pygtk
 pygtk.require('2.0')
 import gtk,gobject
 from os import listdir,makedirs,chdir,getcwd,remove
-from os.path import abspath,exists,expanduser,isdir,dirname,split,dirname
+from os.path import abspath,exists,expanduser,isdir,dirname,split,dirname, getmtime
 from urllib import quote
 from md5 import md5
-from mimetypes import guess_type
+from mimetypes import guess_type, add_type, init
 from sys import argv
 from shutil import rmtree
 from subprocess import call
@@ -29,7 +29,10 @@ class TreeViewColumnExample:
 		cell.set_property('pixbuf', pb)
 		return
 
-	def __init__(self):
+	def __init__(self, by_date = False):
+		init()
+		add_type("video/m4v", ".m4v")
+		self.by_date = by_date
 		theme = gtk.icon_theme_get_default()
 		self.foldericon = theme.load_icon("folder", 100, gtk.ICON_LOOKUP_USE_BUILTIN)
 		self.blankicon = theme.load_icon("empty", 100, gtk.ICON_LOOKUP_USE_BUILTIN)
@@ -76,15 +79,21 @@ class TreeViewColumnExample:
 
 	def add_items(self):
 		self.todo = []
-		for x in sorted(listdir("."), lambda x,y:cmp(x.lower(),y.lower())):
+		
+		if self.by_date:
+			sortfn = lambda x,y:cmp(getmtime(y), getmtime(x))
+		else:
+			sortfn = lambda x,y:cmp(x.lower(),y.lower())
+
+		for x in sorted(listdir("."), sortfn):
 			a = abspath(x)
 			if isdir(x):
-				self.liststore.append([x[:20],self.foldericon,x])
+				self.liststore.append([x[:40],self.foldericon,x])
 			elif a in self.cache:
 				if self.cache[a]:
-					self.liststore.append([x[:20],self.cache[a],x])
+					self.liststore.append([x[:40],self.cache[a],x])
 			else:
-				iter = self.liststore.append([x[:20],self.blankicon,x])
+				iter = self.liststore.append([x[:40],self.blankicon,x])
 				self.todo.append(self.liststore.get_path(iter))
 
 		gobject.idle_add(self.add_more_pics)
@@ -108,7 +117,7 @@ class TreeViewColumnExample:
 			finally:
 				self.todo = self.todo[1:]
 		x = self.liststore.get_value(it,2)
-		mime = guess_type(x)
+		mime = guess_type(x, False)
 		print "doing",x,mime
 		if mime[0] and mime[0].find("video")==0:
 			pth ="file://%s"%quote(abspath(x))
@@ -231,5 +240,6 @@ def main():
 if __name__ == "__main__":
 	if len(argv)>1:
 		chdir(argv[1])
-	tvcexample = TreeViewColumnExample()
+	#tvcexample = TreeViewColumnExample(True)
+	tvcexample = TreeViewColumnExample(False)
 	main()
