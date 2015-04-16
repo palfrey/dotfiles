@@ -12,6 +12,7 @@
 
 [core]
 	excludesfile=~/.gitignore
+	pager = diff-highlight | less -r
 
 #@ ~/.gitprivate
 [github]
