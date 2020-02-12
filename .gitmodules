@@ -16,3 +16,6 @@
 [submodule ".vim/vim-golang"]
 	path = .vim/vim-golang
 	url = git://github.com/jnwhiteh/vim-golang.git
+[submodule "src/rust_generate/pycparser"]
+	path = src/rust_generate/pycparser
+	url = git@github.com:eliben/pycparser.git

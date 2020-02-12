@@ -1,3 +1,6 @@
 {:user {:plugins [
-				  [org.clojars.krisajenkins/lein-nailgun "1.1.2"]
-				  ]}}
+[mvxcvi/whidbey "1.0.0"]
+[lein-auto "0.1.3"]
+				  ]
+ }
+}

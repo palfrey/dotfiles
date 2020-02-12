@@ -79,4 +79,4 @@ autocmd FileType python set noet
 call pathogen#infect()
 
 set background=dark
-colorscheme solarized
+colorscheme murphy

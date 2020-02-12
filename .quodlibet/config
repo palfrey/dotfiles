@@ -1,0 +1,110 @@
+[settings]
+columns = ~#track,~title~version,~album~discsubtitle,~#length,artist
+	
+default_rating = 0.5
+scan = /Users/palfrey/Dropbox/Music
+
+[memory]
+browser = SearchBar
+browser_panedbrowser_maximized = 0
+browser_panedbrowser_position = 0 22
+browser_panedbrowser_size_ = 600 400
+browser_searchbar_maximized = 0
+browser_searchbar_position = 0 1
+browser_searchbar_size_ = 600 400
+chooser_dir = /Users/palfrey
+column_expands = ~title~version,1,~album~discsubtitle,1,artist,1
+	
+column_widths = ~title~version,-1,~album~discsubtitle,-1,artist,-1
+	
+open_browsers = 
+plugin_prefs_maximized = 0
+plugin_prefs_position = 448 51
+plugin_prefs_size_ = 700 658
+plugin_selection = Website Search
+prefs_page = songlist
+queue = False
+queue_disable = False
+queue_expanded = True
+queue_position = 0.7494305239179955
+quodlibet_information_maximized = 0
+quodlibet_information_position = 520 95
+quodlibet_information_size_ = 776 400
+quodlibet_last_active_version = 4.2.1
+quodlibet_maximized = 0
+quodlibet_position = 1920 23
+quodlibet_properties_maximized = 0
+quodlibet_properties_pos = 0.21413276231263384
+quodlibet_properties_position = 569 52
+quodlibet_properties_size_ = 787 648
+quodlibet_properties_size_single = 467 414
+quodlibet_size_ = 1920 1035
+repeat = True
+repeat_mode = repeat_all
+seek = 17291
+shuffle = True
+sidebar_pos = 0.25
+song = /Users/palfrey/Dropbox/Music/Pendulum/Immersion/11 The Vulture.mp3
+sortby = 0artist
+	
+volume = 1.0
+
+[player]
+gst_buffer = 3.0
+is_playing = False
+replaygain = true
+replaygain_mode = auto
+
+[browsers]
+albumlist_pos = 0.4
+audiofeeds_pos = 0.4
+collectionbrowser_pos = 0.4
+filesystem_pos = 0.4
+internetradio_pos = 0.4
+panedbrowser_pane_widths = 0.4984375
+	
+panedbrowser_pos = 0.41002277904328016
+playlistsbrowser_pos = 0.4
+query_text = 
+
+[__config__]
+version = 0
+
+[albumart]
+prefer_embedded = true
+
+[editing]
+alltags = true
+auto_save_changes = true
+
+[rename]
+windows = true
+
+[plugins]
+active_plugins = musicbrainz-cover
+	AcoustidSearch
+	playcounteq
+	MusicBrainz lookup
+	ReplayGain
+	refresh-songs
+	Theme Switcher
+	Automatic Rating
+	Last.fm Sync
+	discogs-cover
+	Download Album Art
+animosd_monitor = 0
+cover_engine_amazon = True
+cover_engine_discogs = True
+lastfmsync_username = palfrey
+missing_query_include_empty = True
+quodlibet.fake.plugins.visualisations_executable = projectM-pulseaudio
+randomalbum_use_weights = 0
+scrobbler_service = Last.fm
+shufflebygrouping_grouping = ~grouping~album~albumartist
+shufflebygrouping_grouping_filter = grouping
+squeezebox_debug = False
+theme switcher_prefer_dark = true
+theme switcher_theme = Mac
+titlecase_allow_all_caps = True
+titlecase_human_title_case = True
+

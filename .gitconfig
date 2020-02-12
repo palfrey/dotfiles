@@ -1,7 +1,7 @@
 
 [user]
-	email=palfrey@tevp.net
-	name=Tom Parker
+	email = palfrey@tevp.net
+	name = Tom Parker-Shemilt
 
 [alias]
 	ca=commit -a
@@ -9,11 +9,22 @@
 	ci=commit
 	st=status
 	up = pull --rebase
+	push-this=push -u origin HEAD
+	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
+	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
 
 [core]
-	excludesfile=~/.gitignore
+	excludesfile = ~/.gitignore
 	pager = diff-highlight | less -r
 
 #@ ~/.gitprivate
 [github]
 	user = palfrey
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
+[push]
+	default = upstream

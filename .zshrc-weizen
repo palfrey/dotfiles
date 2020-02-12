@@ -1,0 +1,10 @@
+alias ls='gls --color=auto'
+
+#source ~/.rvm/scripts/rvm
+export ANDROID_SDK_ROOT=/usr/local/share/android-sdk
+export BOOT_JVM_OPTIONS='-Xmx2g -client'
+export RUST_SRC_PATH=~/.multirust/toolchains/stable-x86_64-apple-darwin/lib/rustlib/src/rust/src
+export GOPATH=~/go
+export PATH=$PATH:/usr/local/opt/go/libexec/bin
+export PATH=$PATH:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:~/.cargo/bin:/usr/local/sbin:$GOPATH/bin:~/Library/Python/3.6/bin
+export PATH=/usr/local/lib/ruby/gems/2.4.0/bin:/usr/local/opt/ruby@2.4/bin:$PATH
