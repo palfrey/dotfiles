@@ -143,7 +143,6 @@ Desktop
 .compiz
 .mission-control
 /Downloads/
-/src/
 .remmina
 .bash_history
 .lein
@@ -282,4 +281,12 @@ perl5/
 random.dat
 vpn/
 www/
+.nix-profile
+.quodlibet/current
+.quodlibet/feeds
+.quodlibet/songs
+.quodlibet/queue
+.quodlibet/lists/
+.quodlibet/playlists/
 
+/src/
