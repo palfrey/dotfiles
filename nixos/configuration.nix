@@ -6,6 +6,7 @@
       # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./cachix.nix
+      /home/palfrey/src/nixos-hardware/dell/xps/15-9520/nvidia/default.nix
     ];
 
   # Bootloader.
@@ -123,6 +124,8 @@
       dropbox
       htop
       (import (fetchTarball https://github.com/cachix/devenv/archive/v0.6.tar.gz)).default
+      psmisc
+      powertop
     ];
 
   fonts.fonts = with pkgs; [
@@ -177,8 +180,6 @@
   #hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.prime = {
     offload.enable = true;
-    intelBusId = "PCI:0:2:0";
-    nvidiaBusId = "PCI:1:0:0";
   };
 
   # Enable the OpenSSH daemon.
