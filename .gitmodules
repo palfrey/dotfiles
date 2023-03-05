@@ -1,21 +1,3 @@
 [submodule "bin/urlgrab"]
 	path = bin/urlgrab
 	url = git@github.com:palfrey/urlgrab.git
-[submodule "bin/iotop.git"]
-	path = bin/iotop.git
-	url = git://repo.or.cz/iotop.git
-[submodule "bin/hub-upstream"]
-	path = bin/hub-upstream
-	url = git://github.com/defunkt/hub.git
-[submodule ".vim/pathogen"]
-	path = .vim/pathogen
-	url = https://github.com/tpope/vim-pathogen.git
-[submodule ".vim/bundle/vim-colors-solarized"]
-	path = .vim/bundle/vim-colors-solarized
-	url = https://github.com/altercation/vim-colors-solarized.git
-[submodule ".vim/vim-golang"]
-	path = .vim/vim-golang
-	url = git://github.com/jnwhiteh/vim-golang.git
-[submodule "src/rust_generate/pycparser"]
-	path = src/rust_generate/pycparser
-	url = git@github.com:eliben/pycparser.git
