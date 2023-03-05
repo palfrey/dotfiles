@@ -164,7 +164,6 @@
     };
     windowManager.i3 = {
       enable = true;
-      extraSessionCommands = "export TERMINAL=alacritty";
       extraPackages = with pkgs; [
         i3lock #default i3 screen locker
       ];
