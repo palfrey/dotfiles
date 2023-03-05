@@ -289,3 +289,9 @@ www/
 .quodlibet/playlists/
 
 /src/
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+.direnv/
