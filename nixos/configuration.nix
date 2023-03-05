@@ -59,7 +59,15 @@
     isNormalUser = true;
     description = "Tom Parker-Shemilt";
     extraGroups = [ "networkmanager" "wheel" "audio" "docker" ];
-    packages = with pkgs; [ pavucontrol rustup feh albert udiskie redshift rofi quodlibet direnv ];
+    packages = with pkgs; let
+      quodlibet = pkgs.quodlibet.override {
+        withDbusPython = true;
+        withPypresence = true;
+        withPyInotify = true;
+        withMusicBrainzNgs = true;
+      };
+    in
+    [ pavucontrol rustup feh albert udiskie redshift rofi quodlibet direnv playerctl ];
   };
 
   environment.sessionVariables = {
