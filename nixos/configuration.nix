@@ -59,15 +59,6 @@
     isNormalUser = true;
     description = "Tom Parker-Shemilt";
     extraGroups = [ "networkmanager" "wheel" "audio" "docker" ];
-    packages = with pkgs; let
-      quodlibet = pkgs.quodlibet.override {
-        withDbusPython = true;
-        withPypresence = true;
-        withPyInotify = true;
-        withMusicBrainzNgs = true;
-      };
-    in
-    [ pavucontrol rustup feh albert udiskie redshift rofi quodlibet direnv playerctl ];
   };
 
   environment.sessionVariables = {
@@ -92,9 +83,13 @@
 
   programs.zsh = {
     enable = true;
-    ohMyZsh = {
-      enable = true;
-    };
+  };
+
+  nix = {
+    package = pkgs.nixFlakes;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
   };
 
   # List packages installed in system profile. To search, run:
@@ -119,7 +114,6 @@
       _1password-gui
       slack
       discord
-      vscode
       alacritty
       python3
       python2
