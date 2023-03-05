@@ -32,6 +32,7 @@
       beets
       (pkgs.python3.withPackages my-python-packages)
       pkgsUnstable.zoom-us
+      dunst
     ];
   };
 
