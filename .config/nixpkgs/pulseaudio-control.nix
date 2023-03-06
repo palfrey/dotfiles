@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub, pulseaudio, gnugrep, gnused }:
+{ stdenv, fetchFromGitHub, pkgs }:
 
 let
   version = "3.1.1";
@@ -14,16 +14,21 @@ stdenv.mkDerivation {
   };
 
   buildInputs = [
-    gnugrep
-    gnused
-    pulseaudio
+    pkgs.gnugrep
+    pkgs.gnused
+    pkgs.gawk
+    pkgs.pulseaudio
   ];
 
   buildPhase = ''
     substituteInPlace pulseaudio-control.bash \
-    --replace grep ${gnugrep}/bin/grep \
-    --replace pactl ${pulseaudio}/bin/pactl \
-    --replace sed ${gnused}/bin/sed
+    --replace grep ${pkgs.gnugrep}/bin/grep \
+    --replace pactl ${pkgs.pulseaudio}/bin/pactl \
+    --replace " sed" " ${pkgs.gnused}/bin/sed" \
+    --replace awk ${pkgs.gawk}/bin/awk \
+    --replace " tr" " ${pkgs.coreutils-full}/bin/tr" \
+    --replace " cut" " ${pkgs.coreutils-full}/bin/cut" \
+    --replace sort ${pkgs.coreutils-full}/bin/sort
   '';
 
   installPhase = ''
