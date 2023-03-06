@@ -34,6 +34,8 @@
       pkgsUnstable.zoom-us
       dunst
       polybar-pulseaudio-control
+      signal-desktop
+      flameshot
     ];
   };
 
