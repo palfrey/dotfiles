@@ -14,6 +14,7 @@
         withMusicBrainzNgs = true;
       };
       polybar-pulseaudio-control = callPackage ./pulseaudio-control.nix { };
+      diff-highlight = callPackage ./diff-highlight.nix { };
       my-python-packages = p: with p; [
         pip
       ];
@@ -36,6 +37,9 @@
       polybar-pulseaudio-control
       signal-desktop
       flameshot
+      just
+      clang
+      diff-highlight
     ];
   };
 
