@@ -23,7 +23,7 @@
   boot.initrd.luks.devices."luks-73da88a7-d71c-457d-ad1c-f35cf857a5ae".device = "/dev/disk/by-uuid/73da88a7-d71c-457d-ad1c-f35cf857a5ae";
   boot.initrd.luks.devices."luks-73da88a7-d71c-457d-ad1c-f35cf857a5ae".keyFile = "/crypto_keyfile.bin";
 
-  networking.hostName = "dingle"; # Define your hostname.
+  networking.hostName = "strath"; # Define your hostname.
 
   # Enable networking
   networking.networkmanager.enable = true;
