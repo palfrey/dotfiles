@@ -1,4 +1,4 @@
-#!/run/current-system/sw/bin/perl
+#!/bin/perl
 
 use 5.008;
 use warnings FATAL => 'all';
