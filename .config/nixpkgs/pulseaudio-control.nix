@@ -18,6 +18,7 @@ stdenv.mkDerivation {
     pkgs.gnused
     pkgs.gawk
     pkgs.pulseaudio
+    pkgs.coreutils-full
   ];
 
   buildPhase = ''

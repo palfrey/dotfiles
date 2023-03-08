@@ -40,6 +40,10 @@
       just
       clang
       diff-highlight
+      circleci-cli
+      docker-compose
+      yarn
+      nodejs
     ];
   };
 
