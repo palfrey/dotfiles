@@ -13,6 +13,12 @@
         withPyInotify = true;
         withMusicBrainzNgs = true;
       };
+      fixinterpreter = writeShellScriptBin "fixinterpreter"
+        ''
+          ${pkgs.patchelf}/bin/patchelf \
+              --set-interpreter ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 $1
+        '';
+
       polybar-pulseaudio-control = callPackage ./pulseaudio-control.nix { };
       diff-highlight = callPackage ./diff-highlight.nix { };
       my-python-packages = p: with p; [
@@ -44,6 +50,7 @@
       docker-compose
       yarn
       nodejs
+      fixinterpreter
     ];
   };
 
