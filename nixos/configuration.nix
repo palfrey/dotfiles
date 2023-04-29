@@ -105,9 +105,10 @@
       };
     in
     [
-      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      vim
       wget
       curl
+      cacert
       lshw
       pciutils
       firefox
@@ -126,7 +127,11 @@
       (import (fetchTarball https://github.com/cachix/devenv/archive/v0.6.tar.gz)).default
       psmisc
       powertop
+      dhcpcd
+      lsof
     ];
+
+  services.fwupd.enable = true;
 
   fonts.fonts = with pkgs; [
     noto-fonts
@@ -176,7 +181,7 @@
     videoDrivers = [ "nvidia" ];
   };
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_6_1;
   #hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.prime = {
     offload.enable = true;
