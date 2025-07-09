@@ -2,7 +2,8 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
+      # Include the results of the hardware scan.
       ./cage-hardware-configuration.nix
     ];
 
@@ -39,16 +40,26 @@
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the XFCE Desktop Environment.
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.desktopManager.xfce.enable = true;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "gb";
-    variant = "";
+  services.displayManager.defaultSession = "none+i3";
+  services.xserver = {
+    enable = true;
+    desktopManager = {
+      xterm.enable = false;
+      xfce.enable = true;
+    };
+    displayManager = {
+      lightdm.enable = true;
+    };
+    windowManager.i3 = {
+      enable = true;
+      extraPackages = with pkgs; [
+        i3lock #default i3 screen locker
+      ];
+    };
+    xkb = {
+      layout = "gb";
+      variant = "";
+    };
   };
 
   # Configure console keymap
@@ -56,6 +67,16 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+
+  users.defaultUserShell = pkgs.zsh;
+  programs.zsh = {
+    enable = true;
+  };
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+  services.udisks2.enable = true;
+  xdg.mime.enable = true;
+  virtualisation.docker.enable = true;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
@@ -83,7 +104,7 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       _1password-gui-beta
-     vscode
+      vscode
     ];
   };
 
@@ -95,11 +116,58 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
-    git
+  environment.systemPackages = with pkgs;
+    let
+      polybar = pkgs.polybar.override {
+        i3Support = true;
+        iwSupport = true;
+        pulseSupport = true;
+        nlSupport = true;
+      };
+    in
+    [
+      vim
+      wget
+      curl
+      cacert
+      lshw
+      pciutils
+      firefox
+      git
+      _1password-gui
+      slack
+      discord
+      alacritty
+      python3
+      polybar
+      jq
+      file
+      dropbox
+      htop
+      devenv
+      psmisc
+      powertop
+      dhcpcd
+      lsof
+    ];
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    dina-font
+    proggyfonts
+    powerline-fonts
+    unifont
+    siji
   ];
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

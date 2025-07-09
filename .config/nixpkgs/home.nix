@@ -4,13 +4,11 @@
   home = {
     username = "palfrey";
     homeDirectory = "/home/palfrey";
-    stateVersion = "22.11";
+    stateVersion = "25.05";
     packages = with pkgs; let
-      pkgsUnstable = import <nixpkgs-unstable> { config = { allowUnfree = true; }; };
       quodlibet = pkgs.quodlibet.override {
         withDbusPython = true;
         withPypresence = true;
-        withPyInotify = true;
         withMusicBrainzNgs = true;
       };
       fixinterpreter = writeShellScriptBin "fixinterpreter"
@@ -26,10 +24,10 @@
         pip
         virtualenvwrapper
       ];
-      extraNodePackages = import ./node/override.nix { };
+      # extraNodePackages = import ./node/override.nix { inherit pkgs system; };
     in
     [
-      pkgsUnstable.vscode
+      vscode
       pavucontrol
       rustup
       feh
@@ -41,7 +39,7 @@
       playerctl
       beets
       (pkgs.python3.withPackages my-python-packages)
-      pkgsUnstable.zoom-us
+      zoom-us
       dunst
       polybar-pulseaudio-control
       signal-desktop
@@ -63,14 +61,14 @@
       zip
       amazon-ecr-credential-helper
       meld
-      pkgsUnstable.nix-init
-      cargo-why
-      extraNodePackages.nx
+      nix-init
+      # cargo-why
+      # extraNodePackages.nx
       nodePackages.pnpm
       unzip
       nix-index
       delta
-      dbeaver
+      dbeaver-bin
     ];
   };
 
@@ -81,7 +79,7 @@
 
   programs.zsh = {
     enable = true;
-    initExtra = "unsetopt nomatch";
+    initContent = "unsetopt nomatch";
     dotDir = ".config/zsh";
     plugins = [{
       name = "zsh-nix-shell";
@@ -95,12 +93,11 @@
     }];
     oh-my-zsh = {
       enable = true;
-      plugins = [ "git" "kubectl" "pyenv" "command-not-found" "direnv" ];
+      plugins = [ "git" "kubectl" "command-not-found" "direnv" ];
       theme = "agnoster";
     };
   };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-
 }
