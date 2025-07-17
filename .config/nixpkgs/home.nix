@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
   home = {
@@ -30,7 +30,7 @@
       # extraNodePackages = import ./node/override.nix { inherit pkgs system; };
     in
     [
-      vscode
+      pkgs-unstable.vscode
       pavucontrol
       rustup
       feh
@@ -75,6 +75,7 @@
       randrctl
       dormer
       slack
+      _1password-gui-beta
     ];
   };
 

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, nix-unstable, ... }:
 
 {
   imports =
@@ -104,8 +104,6 @@
     description = "Tom Parker-Shemilt";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      _1password-gui-beta
-      vscode
     ];
   };
 
