@@ -7,6 +7,7 @@
       ./cage-hardware-configuration.nix
     ];
 
+  boot.kernelPackages = pkgs.linuxPackages_6_15;
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -142,13 +143,17 @@
       polybar
       jq
       file
-      dropbox
       htop
       devenv
       psmisc
       powertop
       dhcpcd
       lsof
+      maestral-gui
+      maestral
+      uv
+      gcc
+      bazelisk
     ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -184,6 +189,9 @@
 
   services.hardware.bolt.enable = true;
   services.fwupd.enable = true;
+
+  programs.nix-ld.enable = true;
+  services.envfs.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

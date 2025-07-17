@@ -1,6 +1,6 @@
-*
-!i3/*
-!nix/*
-!nixpkgs/*
-!rofi/*
+/*
+!i3/
+!nix/
+!nixpkgs/
+!rofi/
 !.gitignore

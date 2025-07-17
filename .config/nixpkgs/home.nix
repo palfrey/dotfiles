@@ -20,6 +20,9 @@
       polybar-pulseaudio-control = callPackage ./pulseaudio-control.nix { };
       diff-highlight = callPackage ./diff-highlight.nix { };
       cargo-why = callPackage ./cargo-why.nix { };
+      randrctl = callPackage ./randrctl.nix { };
+      fenestra = callPackage ./fenestra.nix { };
+      dormer = pkgs.callPackage ./dormer.nix { };
       my-python-packages = p: with p; [
         pip
         virtualenvwrapper
@@ -69,6 +72,9 @@
       nix-index
       delta
       dbeaver-bin
+      randrctl
+      dormer
+      slack
     ];
   };
 
@@ -91,13 +97,30 @@
         sha256 = "0za4aiwwrlawnia4f29msk822rj9bgcygw6a8a6iikiwzjjz0g91";
       };
     }];
+    shellAliases = {
+      bazel = "bazelisk";
+    };
     oh-my-zsh = {
       enable = true;
-      plugins = [ "git" "kubectl" "command-not-found" "direnv" ];
+      plugins = [ "git" "kubectl" "direnv" ];
       theme = "agnoster";
     };
   };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
+  };
+
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+  };
 }

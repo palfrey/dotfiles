@@ -53,9 +53,6 @@ map <C-P> :bp!<CR>
 " enable terminal/gui mouse use
 set mouse=a
 
-" Dos2unix (remove the ^M's)
-command DU 1,$s///
-
 set formatoptions=tcq
 filetype indent on
 
@@ -76,7 +73,7 @@ endif
 
 autocmd FileType python set noet
 
-call pathogen#infect()
+" call pathogen#infect()
 
 set background=dark
 colorscheme murphy

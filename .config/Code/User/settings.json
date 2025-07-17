@@ -1,0 +1,9 @@
+{
+    "chat.agent.enabled": false,
+    "workbench.editor.enablePreview": false,
+    "workbench.startupEditor": "none",
+    "explorer.confirmDragAndDrop": false,
+    "python.analysis.typeCheckingMode": "basic",
+    "git.confirmSync": false,
+    "diffEditor.ignoreTrimWhitespace": false
+}
