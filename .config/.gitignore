@@ -3,4 +3,5 @@
 !nix/
 !nixpkgs/
 !rofi/
+!Code/
 !.gitignore

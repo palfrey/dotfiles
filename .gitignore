@@ -255,7 +255,6 @@ Desktop
 .vagrant.d/
 .virtualenvs
 .voltapp/
-.vscode/
 .workrave/
 .xargo/
 .yarnrc

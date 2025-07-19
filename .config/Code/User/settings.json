@@ -1,9 +1,85 @@
 {
-    "chat.agent.enabled": false,
-    "workbench.editor.enablePreview": false,
-    "workbench.startupEditor": "none",
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml"
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "apklab.apkSignerPath": "/home/palfrey/.apklab/uber-apk-signer-1.3.0.jar",
+    "apklab.apktoolPath": "/home/palfrey/.apklab/apktool_2.9.3.jar",
+    "apklab.jadxDirPath": "/home/palfrey/.apklab/jadx-1.4.7",
+    "cmake.showConfigureWithDebuggerNotification": false,
+    "cmake.showOptionsMovedNotification": false,
+    "containers.containers.groupBy": "None",
+    "containers.containers.sortBy": "CreatedTime",
+    "coverage-gutters.coverageFileNames": [
+        "coverage/tests.lcov",
+        "lcov.info",
+        "cov.xml",
+        "coverage.xml",
+        "jacoco.xml",
+        "coverage.cobertura.xml"
+    ],
+    "dart.flutterSdkPath": "/home/palfrey/src/flutter",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "docker.containers.groupBy": "None",
+    "docker.containers.sortBy": "CreatedTime",
+    "docker.showStartPage": false,
+    "editor.codeLens": true,
+    "editor.foldingHighlight": false,
+    "editor.minimap.enabled": false,
+    "editor.renderControlCharacters": false,
+    "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
-    "python.analysis.typeCheckingMode": "basic",
+    "files.associations": {
+        "*.am": "makefile",
+        "*.bazel": "starlark",
+        "*.html": "jinja-html",
+        "*.jinja": "jinja-properties",
+        "*.json": "jsonc"
+    },
     "git.confirmSync": false,
-    "diffEditor.ignoreTrimWhitespace": false
+    "git.openRepositoryInParentFolders": "never",
+    "git.replaceTagsWhenPull": true,
+    "git.suggestSmartCommit": false,
+    "go.alternateTools": {
+        "go": "/nix/store/jfv85qbj4vb1dafcg6kncg4vrbq2bbxv-go-1.23.4/bin/go"
+    },
+    "jupyter.widgetScriptSources": [
+        "jsdelivr.com",
+        "unpkg.com"
+    ],
+    "python.analysis.typeCheckingMode": "basic",
+    "python.languageServer": "Pylance",
+    "redhat.telemetry.enabled": true,
+    "rust-analyzer.cargo.targetDir": "target/rust-analyzer-vscode",
+    "scm.defaultViewMode": "tree",
+    "security.workspace.trust.untrustedFiles": "open",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "update.mode": "manual",
+    "window.zoomLevel": 2,
+    "workbench.editor.empty.hint": "hidden",
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "workbench.quickOpen.closeOnFocusLost": false,
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.tips.enabled": false
 }

@@ -1,8 +1,8 @@
-
 [user]
 	email = palfrey@tevp.net
 	name = Tom Parker-Shemilt
-
+[diff]
+	submodule = diff
 [alias]
 	ca=commit -a
 	co=checkout
@@ -10,14 +10,22 @@
 	st=status
 	up = pull --rebase
 	push-this=push -u origin HEAD
+	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
+	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 git branch -d"
+	cleanup-squash = !git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -D
 	wip = for-each-ref --sort='authordate:iso8601' --format=' %(color:green)%(authordate:relative)%09%(color:white)%(refname:short)' refs/heads
-	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 git branch -d"
 
 [core]
-	excludesfile = ~/.gitignore
-	pager = diff-highlight | less -r
+    pager = delta
 
-[github]
-	user = palfrey
-[push]
-	default = upstream
+[delta]
+    plus-color = "#012800"
+    minus-color = "#340001"
+    syntax-theme = Monokai Extended
+
+[interactive]
+    diffFilter = delta --color-only
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main

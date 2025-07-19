@@ -1,0 +1,6 @@
+// Place your key bindings in this file to override the defaultsauto[]
+[
+    { "key": "enter",                    "command": "renameFile",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsRoot && !explorerResourceReadonly && !inputFocus" },
+
+]
